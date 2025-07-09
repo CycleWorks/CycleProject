@@ -15,7 +15,7 @@ cmake -G <GENERATOR> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -B build
 cmake --build build --parallel
 ```
 
-- Where <GENERATOR> specifies the backend build system (Ex: ```Ninja```, ```Unix Makefiles```, ```Visual Studio```, etc...)
-- Where <BUILD_TYPE> can be either ```Release``` or ```Debug```
+- Where \<GENERATOR\> specifies the backend build system (Ex: ```Ninja```, ```Unix Makefiles```, ```Visual Studio```, etc...)
+- Where \<BUILD_TYPE\> can be either ```Release``` or ```Debug```
 
 The final compiled executable should be located in ```./bin/```
