@@ -1,0 +1,8 @@
+.git/*
+.cache/*
+build/*
+bin/*
+
+# With Clangd LSP
+.vscode/*
+!.vscode/settings.json
