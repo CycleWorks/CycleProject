@@ -13,11 +13,14 @@ The **Cycle programming language** is extremely hypothetical and building a work
 To build Cycle, run the following commands in your terminal:
 
 ```bash
-cmake -G <GENERATOR> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -B build
+cmake -G <GENERATOR> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DCMAKE_CXX_COMPILER=<COMPILER> -B build
 cmake --build build --parallel
 ```
 
 - Where ```<GENERATOR>``` specifies the backend build system (Ex: ```Ninja```, ```Unix Makefiles```, ```Visual Studio```, etc...)
 - Where ```<BUILD_TYPE>``` can be either ```Release``` or ```Debug```
+- Where ```<COMPILER>``` can be either ```clang++``` or ```g++``` depending on which one you have installed
 
-The final compiled executable should be located in ```./bin/```
+\> Compilers other than the ones mentionned are NOT guarenteed to work with this project
+<br>
+\> The final compiled executable should be located in ```./bin/```
