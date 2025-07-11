@@ -1,0 +1,16 @@
+#include "errors.hpp"
+#include "colors.hpp"
+#include <format>
+
+using namespace Cycle;
+
+ThrowableException::ThrowableException(const ColorName& error_name_color, const std::string& error_name, const std::string& error_message):
+    _error_message(std::format(
+        "[{}{}{}]: {}",
+        error_name_color, error_name, RESET_COLOR, error_message
+    ))
+{}
+
+const char* ThrowableException::what() const {
+    return _error_message.c_str();
+}

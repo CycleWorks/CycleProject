@@ -43,18 +43,20 @@ namespace Cycle {
 
     void set_console_color(const OutputColor& color) noexcept;
 
-    inline const std::string RESET_COLOR = "@rs";
-    inline const std::string BLACK_COLOR = "@bk";
-    inline const std::string BLUE_COLOR = "@bl";
-    inline const std::string GREEN_COLOR = "@gn";
-    inline const std::string CYAN_COLOR = "@cy";
-    inline const std::string RED_COLOR = "@rd";
-    inline const std::string MAGENTA_COLOR = "@mg";
-    inline const std::string YELLOW_COLOR = "@yw";
-    inline const std::string WHITE_COLOR = "@wh";
-    inline const std::string GREY_COLOR = "@gy";
+    using ColorName = std::string;
 
-    inline const std::unordered_map<std::string, OutputColor> COLOR_CODES = {
+    inline const ColorName RESET_COLOR = "@rs";
+    inline const ColorName BLACK_COLOR = "@bk";
+    inline const ColorName BLUE_COLOR = "@bl";
+    inline const ColorName GREEN_COLOR = "@gn";
+    inline const ColorName CYAN_COLOR = "@cy";
+    inline const ColorName RED_COLOR = "@rd";
+    inline const ColorName MAGENTA_COLOR = "@mg";
+    inline const ColorName YELLOW_COLOR = "@yw";
+    inline const ColorName WHITE_COLOR = "@wh";
+    inline const ColorName GREY_COLOR = "@gy";
+
+    inline const std::unordered_map<ColorName, OutputColor> COLOR_CODES = {
         {RESET_COLOR, OutputColor::RESET},
         {BLACK_COLOR, OutputColor::BLACK},
         {BLUE_COLOR, OutputColor::BLUE},
