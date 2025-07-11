@@ -1,12 +1,10 @@
 # CycleProject
 
 The **Cycle programming language** is extremely hypothetical and building a working compiler for it might not even be possible.
-<br>
-We have a very clear idea of how the language will work and we will try to make a compiler for it even if it drains all of our sanity.
 
-This project is licensed under the **[GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html)**, see **[LICENSE](./LICENSE)** for full details.
+\> This project is licensed under the **[GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html)**, see **[LICENSE](./LICENSE)** for full details.
 <br>
-This project links against LLVM, which uses Apache 2.0 w/ LLVM Exception **[Apache 2.0 w/ LLVM Exception](https://llvm.org/LICENSE.txt)**, See **[LICENSE.LLVM](./LICENSE.LLVM)** for details.
+\> This project links against LLVM, which uses **[Apache 2.0 w/ LLVM Exception](https://llvm.org/LICENSE.txt)**, See **[LICENSE.LLVM](./LICENSE.LLVM)** for details.
 
 ---
 
