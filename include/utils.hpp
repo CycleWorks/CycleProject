@@ -62,4 +62,20 @@ namespace Cycle {
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
     }
+
+    struct AbstractClass {
+        virtual ~AbstractClass(){}
+    protected:
+        virtual void override_for_constructibility() const = 0;
+    };
+
+    template <typename ChildClass>
+    struct BasicFactory {
+        static std::unique_ptr<ChildClass> make_unique(ChildClass* new_class){
+            return std::unique_ptr<ChildClass>(new_class);
+        }
+        static std::shared_ptr<ChildClass> make_shared(ChildClass* new_class){
+            return std::shared_ptr<ChildClass>(new_class);
+        }
+    };
 }
