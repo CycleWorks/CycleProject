@@ -30,13 +30,33 @@ namespace Cycle {
         virtual void override_for_constructibility() const = 0;
     };
 
-    template <typename ChildClass>
+    template <typename Derived>
     struct BasicFactory {
-        static std::unique_ptr<ChildClass> make_unique(ChildClass* new_class){
-            return std::unique_ptr<ChildClass>(new_class);
+        BasicFactory(const BasicFactory&) = delete;
+        BasicFactory& operator=(const BasicFactory&) = delete;
+
+        static std::unique_ptr<Derived> make_unique(Derived* new_class){
+            return std::unique_ptr<Derived>(new_class);
         }
-        static std::shared_ptr<ChildClass> make_shared(ChildClass* new_class){
-            return std::shared_ptr<ChildClass>(new_class);
+        static std::shared_ptr<Derived> make_shared(Derived* new_class){
+            return std::shared_ptr<Derived>(new_class);
         }
+    private:
+        BasicFactory() = default;
+        ~BasicFactory() = default;
+    };
+
+    template <typename Derived>
+    struct BasicSingleton {
+        BasicSingleton(const BasicSingleton&) = delete;
+        BasicSingleton& operator=(const BasicSingleton&) = delete;
+
+        static Derived* get(){
+            static Derived thiz;
+            return &thiz;
+        }
+    private:
+        BasicSingleton() = default;
+        ~BasicSingleton() = default;
     };
 }
