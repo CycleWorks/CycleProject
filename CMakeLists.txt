@@ -33,3 +33,36 @@ target_include_directories(cycle PRIVATE "${CMAKE_SOURCE_DIR}/include/")
 
 # Define Cycle version macro
 target_compile_definitions(cycle PRIVATE CYCLE_VERSION="Alpha 1.0")
+
+# -------------------------------
+# LLVM Integration
+# -------------------------------
+
+# Enable static linking
+set(LLVM_USE_STATIC_LIBS ON)
+
+# Find LLVM
+find_package(LLVM 18.1.8 EXACT REQUIRED CONFIG)
+
+# Debug info
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+# Include LLVM headers
+target_include_directories(cycle SYSTEM PRIVATE ${LLVM_INCLUDE_DIRS})
+
+# Map components to dynamic libraries
+llvm_map_components_to_libnames(LLVM_LIBS
+    Core
+    Support
+    IRReader
+)
+
+# Link dynamically against LLVM
+target_link_libraries(cycle PRIVATE ${LLVM_LIBS})
+
+# Define LLVM macros
+target_compile_definitions(cycle PRIVATE ${LLVM_DEFINITIONS})
+
+# LLVM PCH
+target_precompile_headers(cycle PRIVATE "${CMAKE_SOURCE_DIR}/include/LLVM.hpp")
