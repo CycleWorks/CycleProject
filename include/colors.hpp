@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils.hpp"
+#include "OS.hpp"
 #include <unordered_map>
 
 namespace Cycle {
