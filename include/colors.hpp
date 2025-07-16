@@ -23,7 +23,7 @@ namespace Cycle {
             WHITE = "\033[37m",
             GREY = "\033[37m"
         };
-    #elifdef OS_WINDOWS // If OS is trash
+    #elif defined(OS_WINDOWS) // If OS is trash
         #define USE_COLOR_CONSOLE
 
         enum class OutputColor {

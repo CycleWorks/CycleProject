@@ -1,18 +1,15 @@
 # -------------------------------
-# CycleProject with CMake
+# Basic settings
 # -------------------------------
 
 cmake_minimum_required(VERSION 3.16)
 project(CycleProject LANGUAGES CXX VERSION 1.0.0)
 
-# Check if compiler is supported
-if(NOT (CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU"))
-    message(FATAL_ERROR "Compiler NOT supported")
-endif()
-
 # C++ standard
-set(CMAKE_CXX_STANDARD 23)
+set(ENFORCED_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD ${ENFORCED_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Output folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
@@ -23,6 +20,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Link-time optimisation (LTO)
 cmake_policy(SET CMP0069 NEW)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+
+# -------------------------------
+# Compile and link Cycle
+# -------------------------------
 
 # Compile sources
 file(GLOB_RECURSE SOURCES "src/*.cpp")

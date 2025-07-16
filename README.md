@@ -11,26 +11,27 @@ The **Cycle programming language** is extremely hypothetical and building a work
 ## Building the Project
 
 Dependencies:
-- Clang or GCC
-- CMake + generator
+- Python3
+- Compiler supporting C++23
+- CMake 3.16+
+- Any CMake generator
+- LLVM 18.1.8 (Static linking with dynamic C libraries)
 - Clangd for linting (optional)
-- LLVM 18.1.8 (MSVCRT)
 
-About LLVM:
-- LLVM needs to be installed on your system. Add your LLVM installation's ```LLVMConfig.cmake``` to your environment search path so CMake can find it
-- Cycle relies on LLVM's dynamically linked libraries. Make sure the libraries are in the executable's folder before running Cycle
-
-To build Cycle, run the following commands in your terminal:
-
+To resolve python dependencies, run the following commands in your terminal:
 ```bash
-cmake -G <GENERATOR> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DCMAKE_CXX_COMPILER=<COMPILER> -B build
-cmake --build build --parallel
+pip install pathlib
+pip install keyboard
 ```
 
-- Where ```<GENERATOR>``` specifies the backend build system (Ex: ```Ninja```, ```Unix Makefiles```, ```Visual Studio```, etc...)
-- Where ```<BUILD_TYPE>``` can be either ```Release```, ```Debug```, ```RelWithDebInfo``` or ```MinSizeRel```
-- Where ```<COMPILER>``` can be either ```clang++``` or ```g++```, other compilers are NOT guaranteed to work
+To build Cycle, run the following command in your terminal:
 
-\> Compilers other than the ones mentionned are NOT guarenteed to work with this project
+```bash
+python3 build.py
+```
+
+\> This should run the CMake configuration and build the project
+<br>
+\> All settings entered on first build will be saved for future builds
 <br>
 \> The final compiled executable should be located in ```./bin/```

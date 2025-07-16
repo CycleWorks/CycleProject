@@ -1,6 +1,10 @@
+# Not necessary to keep
 .git/*
+
+# Will depend on different systems
 .cache/*
 build/*
+build_settings.json
 bin/*
 
 # With Clangd LSP
