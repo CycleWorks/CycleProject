@@ -1,5 +1,9 @@
 #pragma once
 
+#if __cplusplus <= 202002L
+    #error Compiler must use C++23 or over
+#endif
+
 #include <filesystem>
 #include <string_view>
 #include <memory>

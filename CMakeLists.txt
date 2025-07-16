@@ -21,6 +21,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 cmake_policy(SET CMP0069 NEW)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 
+# Make '__cplusplus' macro compatible with other compilers
+if (MSVC)
+    add_compile_options(/Zc:__cplusplus)
+endif()
+
 # -------------------------------
 # Compile and link Cycle
 # -------------------------------

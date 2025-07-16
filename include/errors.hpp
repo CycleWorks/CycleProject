@@ -7,7 +7,7 @@
 
 namespace Cycle {
     struct ThrowableException : public std::exception {
-        ThrowableException(const ColorName& error_name_color, const std::string& error_name, const std::string& error_message);
+        ThrowableException(ColorNameView error_name_color, const std::string& error_name, const std::string& error_message);
         const char* what() const override;
     private:
         const std::string _error_message;
