@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <string_view>
 #include <memory>
 #include <stdfloat>
 
@@ -11,7 +12,7 @@ using uint = unsigned int;
 [[maybe_unused]] constexpr bool _fs_used = std::is_same_v<fs::path, fs::path>;
 
 namespace Cycle {
-    inline static const std::string TAB_SPACE = "    ";
+    constexpr std::string_view TAB_SPACE = "    ";
 
     template <typename Comparison, typename InputType>
     constexpr bool ptr_cmp(const InputType* ptr){
