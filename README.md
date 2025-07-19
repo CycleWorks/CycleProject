@@ -11,10 +11,9 @@ The **Cycle programming language** is extremely hypothetical and building a work
 ## Building the Project
 
 Dependencies:
-- Python3
 - Compiler supporting C++23
+- Python3
 - CMake 3.16+
-- Any CMake generator
 - LLVM 18.1.8 (Static linking with dynamic C libraries)
 - Clangd for linting (optional)
 
