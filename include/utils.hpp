@@ -1,7 +1,7 @@
 #pragma once
 
 #if __cplusplus <= 202002L
-    #error Compiler must use C++23 or over
+    #error Compiler must use C++23 or higher
 #endif
 
 #include <filesystem>
@@ -13,7 +13,7 @@ namespace fs = std::filesystem;
 using uint = unsigned int;
 
 // Removes annoying ::fs:: warning
-[[maybe_unused]] constexpr bool _fs_used = std::is_same_v<fs::path, fs::path>;
+[[maybe_unused]] constexpr bool _FS_USED = std::is_same_v<fs::path, fs::path>;
 
 namespace Cycle {
     constexpr std::string_view TAB_SPACE = "    ";
