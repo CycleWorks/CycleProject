@@ -19,11 +19,11 @@ namespace Cycle {
     constexpr std::string_view TAB_SPACE = "    ";
 
     template <typename Comparison, typename InputType>
-    constexpr bool ptr_cmp(const InputType* ptr){
-        if constexpr (!std::is_polymorphic<Comparison>::value){
+    bool ptr_cmp(const InputType* ptr){
+        if (!std::is_polymorphic<Comparison>::value){
             throw InternalError("Couldn't compare pointers because comparison type '{}' does not contain RTTI data", type_name<Comparison>());
         }
-        if constexpr (!std::is_polymorphic<InputType>::value){
+        if (!std::is_polymorphic<InputType>::value){
             throw InternalError("Couldn't compare pointers because input type '{}' does not contain RTTI data", type_name<InputType>());
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
