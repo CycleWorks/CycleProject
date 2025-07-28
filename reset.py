@@ -45,6 +45,7 @@ def main():
 
     delete_file(build_settings_file_path)
     empty_folder_contents(build_folder_path)
+    empty_folder_contents(bin_folder_path)
     print("Build files reset successfully\n")
 
 if __name__ == "__main__":
