@@ -6,15 +6,21 @@ import shutil
 
 def delete_file(file_path: Path):
     if file_path.is_file():
-        file_path.unlink()
+        try:
+            file_path.unlink()
+        except:
+            pass
 
 def empty_folder_contents(folder_path: Path):
     if folder_path.is_dir():
         for child in folder_path.iterdir():
-            if child.is_file() or child.is_symlink():
-                child.unlink()
-            elif child.is_dir():
-                shutil.rmtree(child)
+            try:
+                if child.is_file() or child.is_symlink():
+                    child.unlink()
+                elif child.is_dir():
+                    shutil.rmtree(child)
+            except:
+                pass
 
 # ---- Main function ----
 
@@ -22,9 +28,11 @@ def main():
     this_script_path = Path(__file__).resolve().parent
     build_settings_file_path = this_script_path / "build_settings.json"
     build_folder_path = this_script_path / "build"
+    bin_folder_path = this_script_path / "bin"
 
     print(f"\nDeleting file: \"{build_settings_file_path}\"")
-    print(f"Deleting all files in: \"{build_folder_path}\"\n")
+    print(f"Deleting all files in: \"{build_folder_path}\"")
+    print(f"Deleting all files in: \"{bin_folder_path}\"\n")
 
     while True:
         answer = input("Would you like to proceed? [Y/N]: ")
@@ -37,7 +45,7 @@ def main():
 
     delete_file(build_settings_file_path)
     empty_folder_contents(build_folder_path)
-    print("Build files reset successfully")
+    print("Build files reset successfully\n")
 
 if __name__ == "__main__":
     main()
