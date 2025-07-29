@@ -12,7 +12,7 @@ The **Cycle programming language** is extremely hypothetical and building a work
 
 ## Building the Project
 
-Dependencies:
+Manual dependencies:
 - Compiler supporting C++23
 - Python3
 - CMake 3.16+
