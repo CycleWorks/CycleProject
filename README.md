@@ -2,9 +2,11 @@
 
 The **Cycle programming language** is extremely hypothetical and building a working compiler for it might not even be possible.
 
-\> This project is licensed under the **[GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html)**, see **[LICENSE](./LICENSE)** for full details.
+\> This project is licensed under the **[GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html)**
 <br>
-\> This project links against LLVM, which uses **[Apache 2.0 w/ LLVM Exception](https://llvm.org/LICENSE.txt)**, See **[LICENSE.LLVM](./LICENSE.LLVM)** for details.
+\> This project uses LLVM, which uses **[Apache 2.0 w/ LLVM Exception](https://llvm.org/LICENSE.txt)**
+<br>
+\> This project uses Catch2, which uses **[Boost Software License 1.0](https://www.boost.org/LICENSE_1_0.txt)**
 
 ---
 
