@@ -12,7 +12,7 @@
 namespace fs = std::filesystem;
 using uint = unsigned int;
 
-// Removes annoying ::fs:: warning
+// Removes annoying unnused 'fs' warning
 [[maybe_unused]] constexpr bool _FS_USED = std::is_same_v<fs::path, fs::path>;
 
 namespace Cycle {
