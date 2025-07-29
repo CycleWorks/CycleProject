@@ -31,7 +31,7 @@ endif()
 # -------------------------------
 
 add_subdirectory(src)
-add_subdirectory(LLVM)
-add_subdirectory(Catch2)
+add_subdirectory(external/LLVM)
+add_subdirectory(external/Catch2)
 add_subdirectory(tests)
 add_subdirectory(app)
