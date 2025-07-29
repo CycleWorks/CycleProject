@@ -18,6 +18,10 @@ using uint = unsigned int;
 namespace Cycle {
     constexpr std::string_view TAB_SPACE = "    ";
 
+    template <typename T>
+    constexpr std::string_view type_name(){
+        return typeid(T).name();
+    }
     template <typename Comparison, typename InputType>
     bool ptr_cmp(const InputType* ptr){
         if (!std::is_polymorphic<Comparison>::value){
