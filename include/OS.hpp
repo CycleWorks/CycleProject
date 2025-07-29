@@ -34,12 +34,3 @@
 #ifdef THIS
     #undef THIS
 #endif
-
-#include <climits>
-
-#if CHAR_BIT != 8
-    #error This platform does not use the standard 8-bit chararacter type. Compilation failed
-#endif
-
-static_assert(sizeof(float) == 4, "This platform does not use 32-bit float types");
-static_assert(sizeof(double) == 8, "This platform does not use 64-bit double types");
