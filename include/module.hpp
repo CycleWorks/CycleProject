@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Nodes/scope.hpp"
-#include "utils.hpp"
+#include "Common/utils.hpp"
 #include <memory>
 
 namespace Cycle {

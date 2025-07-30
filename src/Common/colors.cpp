@@ -1,4 +1,4 @@
-#include "colors.hpp"
+#include "Common/colors.hpp"
 
 #ifdef OS_SUPPORTS_ANSI_ESCAPES
     void Cycle::set_console_color(const OutputColor& foreground_color) noexcept {

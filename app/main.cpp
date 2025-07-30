@@ -1,5 +1,5 @@
-#include "write.hpp"
-#include "errors.hpp"
+#include "Common/write.hpp"
+#include "Common/errors.hpp"
 
 // NOTE: No pointer pointer shall be nullptr
 

@@ -1,5 +1,5 @@
-#include "errors.hpp"
-#include "colors.hpp"
+#include "Common/errors.hpp"
+#include "Common/colors.hpp"
 #include <format>
 
 using namespace Cycle;

@@ -1,5 +1,5 @@
 #include "Nodes/scope.hpp"
-#include "errors.hpp"
+#include "Common/errors.hpp"
 #include <optional>
 
 using namespace Cycle::Nodes;

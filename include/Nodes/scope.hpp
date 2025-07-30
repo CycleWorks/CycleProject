@@ -2,7 +2,7 @@
 
 #include "Nodes/node.hpp"
 #include "Symbols/symbol.hpp"
-#include "utils.hpp"
+#include "Common/utils.hpp"
 #include <functional>
 #include <memory>
 #include <string_view>

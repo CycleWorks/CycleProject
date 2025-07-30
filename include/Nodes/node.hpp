@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.hpp"
+#include "Common/utils.hpp"
 
 namespace Cycle::Nodes {
     struct BaseNode : public AbstractClass {};

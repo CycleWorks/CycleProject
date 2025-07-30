@@ -1,5 +1,5 @@
-#include "write.hpp"
-#include "colors.hpp"
+#include "Common/write.hpp"
+#include "Common/colors.hpp"
 
 #include <iostream>
 #include <mutex>

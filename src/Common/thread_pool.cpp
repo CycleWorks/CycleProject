@@ -1,7 +1,7 @@
-#include "thread_pool.hpp"
-#include "colors.hpp"
-#include "errors.hpp"
-#include "write.hpp"
+#include "Common/thread_pool.hpp"
+#include "Common/colors.hpp"
+#include "Common/errors.hpp"
+#include "Common/write.hpp"
 #include <mutex>
 #include <thread>
 
