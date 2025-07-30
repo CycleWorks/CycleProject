@@ -1,11 +1,12 @@
-# Not necessary to keep
+# Platform-dependent bloat
 .git/*
-
-# Will depend on different systems
 .cache/*
 build/*
 build_settings.json
 bin/*
+
+# Useless
+whiteboard.txt
 
 # With Clangd LSP
 .vscode/*
