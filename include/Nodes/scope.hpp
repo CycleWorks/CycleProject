@@ -39,9 +39,10 @@ namespace Cycle::Nodes {
 
         std::unique_ptr<BaseScopeContext> make_child_context() const override;
     private:
-        void override_for_constructibility() const override {}
         // TODO Implement later:
         // std::vector<std::unique_ptr<BaseNode>> _child_nodes;
+
+        void override_for_constructibility() const override {}
     };
 
     // Scopes:
