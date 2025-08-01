@@ -31,7 +31,7 @@ namespace Cycle::Nodes {
 
         std::unique_ptr<BaseScopeContext> make_child_context() const override;
     private:
-        void override_for_constructibility() const override {}
+        void polymorphism() const override {}
     };
 
     struct FunctionScopeContext : public BaseScopeContext {
@@ -42,7 +42,7 @@ namespace Cycle::Nodes {
         // TODO Implement later:
         // std::vector<std::unique_ptr<BaseNode>> _child_nodes;
 
-        void override_for_constructibility() const override {}
+        void polymorphism() const override {}
     };
 
     // Scopes:
@@ -66,13 +66,13 @@ namespace Cycle::Nodes {
         explicit Scope(const BaseScope* maybe_parent_scope);
         explicit Scope(const BaseScope* maybe_parent_scope, std::unique_ptr<BaseScopeContext> override_scope_context);
     private:
-        void override_for_constructibility() const override {}
+        void polymorphism() const override {}
     };
 
     struct ScopeHead : public BaseScope {
         explicit ScopeHead();
     private:
-        void override_for_constructibility() const override {}
+        void polymorphism() const override {}
     };
 
     // Factories:

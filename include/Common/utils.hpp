@@ -36,7 +36,7 @@ namespace Cycle {
     struct AbstractClass {
         virtual ~AbstractClass(){}
     protected:
-        virtual void override_for_constructibility() const = 0;
+        virtual void polymorphism() const = 0;
     };
 
     template <typename Derived>
