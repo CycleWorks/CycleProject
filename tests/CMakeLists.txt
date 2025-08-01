@@ -11,11 +11,15 @@ target_link_libraries(run_tests PRIVATE cycle_lib Catch2::Catch2)
 
 # Enable testing
 enable_testing()
-catch_discover_tests(run_tests)
+
+# Discover Catch2 tests
+catch_discover_tests(run_tests
+    EXTRA_ARGS --reporter console
+)
 
 # Run tests
 add_custom_command(TARGET run_tests
     POST_BUILD
-    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+    COMMAND ${CMAKE_CTEST_COMMAND} --verbose --output-on-failure
     COMMENT "Running tests after build"
 )
