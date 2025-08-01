@@ -54,18 +54,4 @@ namespace Cycle {
         BasicFactory() = default;
         ~BasicFactory() = default;
     };
-
-    template <typename Derived>
-    struct BasicSingleton {
-        BasicSingleton(const BasicSingleton&) = delete;
-        BasicSingleton& operator=(const BasicSingleton&) = delete;
-
-        static Derived* get(){
-            static Derived thiz;
-            return &thiz;
-        }
-    private:
-        BasicSingleton() = default;
-        ~BasicSingleton() = default;
-    };
 }
