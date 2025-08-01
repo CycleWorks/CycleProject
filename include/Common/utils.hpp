@@ -2,6 +2,7 @@
 
 #include "system.hpp"
 #include <filesystem>
+#include <functional>
 #include <string_view>
 #include <memory>
 #include <stdfloat>
@@ -28,6 +29,14 @@ namespace Cycle {
             throw InternalError("Couldn't compare pointers because input type '{}' does not contain RTTI data", type_name<InputType>());
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
+    }
+    template <typename T>
+    constexpr T modulus(T a, T b){
+        if constexpr (std::is_integral<T>::value){
+            return a % b;
+        } else {
+            return std::fmod(a, b);
+        }
     }
 
     struct AbstractClass {
