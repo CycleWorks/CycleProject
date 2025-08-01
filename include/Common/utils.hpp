@@ -17,6 +17,13 @@ namespace Cycle {
     constexpr std::string_view TAB_SPACE = "    ";
 
     template <typename T>
+    concept IsInteger = std::is_integral_v<T>;
+    template <typename T>
+    concept IsFloat = std::is_floating_point_v<T>;
+    template <typename T>
+    concept IsNumeric = IsInteger<T> || IsFloat<T>;
+
+    template <typename T>
     constexpr std::string_view type_name(){
         return typeid(T).name();
     }
@@ -39,8 +46,16 @@ namespace Cycle {
         }
     }
     template <typename T>
-    requires std::is_floating_point_v<T>
+    requires IsFloat<T>
     bool compare_floats(T a, T b, T epsilon){
+        return std::fabs(a - b) <= epsilon;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    bool compare_primitives(T a, T b, T epsilon){
+        if constexpr (std::is_integral<T>::value){
+
+        }
         return std::fabs(a - b) <= epsilon;
     }
 
