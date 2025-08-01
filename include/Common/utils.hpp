@@ -38,6 +38,11 @@ namespace Cycle {
             return std::fmod(a, b);
         }
     }
+    template <typename T>
+    requires std::is_floating_point_v<T>
+    bool compare_floats(T a, T b, T epsilon){
+        return std::fabs(a - b) <= epsilon;
+    }
 
     struct AbstractClass {
         virtual ~AbstractClass(){}
