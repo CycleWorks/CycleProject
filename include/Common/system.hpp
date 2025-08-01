@@ -1,5 +1,9 @@
 #pragma once
 
+#if __cplusplus <= 202002L
+    #error Compiler must use C++23 or higher
+#endif
+
 #if defined(_WIN32)
     #define OS_WINDOWS
     #include <windows.h>
