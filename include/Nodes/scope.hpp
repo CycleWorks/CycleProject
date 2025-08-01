@@ -18,12 +18,12 @@ namespace Cycle::Nodes {
         const BaseScope* get_this_scope() const;
 
         bool has_symbol(const std::string& symbol_name) const;
-        Symbols::BaseSymbol* add_symbol(std::unique_ptr<Symbols::BaseSymbol>&& symbol);
+        Symbols::Symbol* add_symbol(std::unique_ptr<Symbols::Symbol>&& symbol);
 
         virtual std::unique_ptr<BaseScopeContext> make_child_context() const = 0;
     private:
         const BaseScope* _this_scope;
-        mutable std::unordered_map<std::string_view, std::unique_ptr<Symbols::BaseSymbol>> _symbols;
+        mutable std::unordered_map<std::string_view, std::unique_ptr<Symbols::Symbol>> _symbols;
     };
 
     struct GlobalScopeContext : public BaseScopeContext {
