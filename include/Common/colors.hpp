@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common/utils.hpp"
+#include "system.hpp"
 #include <unordered_map>
 
 namespace Cycle {
@@ -39,6 +39,19 @@ namespace Cycle {
         };
     #else
         #warning Compiling on operating system with no supported console color support
+
+        enum class OutputColor {
+            RESET = 0,
+            BLACK,
+            BLUE,
+            GREEN,
+            CYAN,
+            RED,
+            MAGENTA,
+            YELLOW,
+            WHITE,
+            GREY
+        };
     #endif
 
     void set_console_color(const OutputColor& color) noexcept;
