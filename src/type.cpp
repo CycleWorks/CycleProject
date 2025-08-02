@@ -1,77 +1,134 @@
 #include "type.hpp"
+#include "value.hpp"
+#include <limits>
+#include <memory>
+#include <stdint.h>
 #include <vector>
 
 using namespace Cycle;
 
-// PrimitiveType:
+// NumericType:
 
-const PrimitiveType* PrimitiveType::get_i8(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::INT8);
+const NumericType* NumericType::get_i8(){
+    static const NumericType singleton(NumericType::Kind::INT8);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_i16(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::INT16);
+const NumericType* NumericType::get_i16(){
+    static const NumericType singleton(NumericType::Kind::INT16);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_i32(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::INT32);
+const NumericType* NumericType::get_i32(){
+    static const NumericType singleton(NumericType::Kind::INT32);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_i64(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::INT64);
+const NumericType* NumericType::get_i64(){
+    static const NumericType singleton(NumericType::Kind::INT64);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_u8(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::UINT8);
+const NumericType* NumericType::get_u8(){
+    static const NumericType singleton(NumericType::Kind::UINT8);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_u16(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::UINT16);
+const NumericType* NumericType::get_u16(){
+    static const NumericType singleton(NumericType::Kind::UINT16);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_u32(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::UINT32);
+const NumericType* NumericType::get_u32(){
+    static const NumericType singleton(NumericType::Kind::UINT32);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_u64(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::UINT64);
+const NumericType* NumericType::get_u64(){
+    static const NumericType singleton(NumericType::Kind::UINT64);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_float(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::FLOAT);
+const NumericType* NumericType::get_float(){
+    static const NumericType singleton(NumericType::Kind::FLOAT);
     return &singleton;
 }
 
-const PrimitiveType* PrimitiveType::get_double(){
-    static const PrimitiveType singleton(PrimitiveType::Kind::DOUBLE);
+const NumericType* NumericType::get_double(){
+    static const NumericType singleton(NumericType::Kind::DOUBLE);
     return &singleton;
 }
 
-PrimitiveType::PrimitiveType(PrimitiveType::Kind kind):
+std::unique_ptr<ValueSet> NumericType::create_default_value_set() const {
+    static NumberValueSet<int8_t> single_i8;
+    static NumberValueSet<int16_t> single_i16;
+    static NumberValueSet<int32_t> single_i32;
+    static NumberValueSet<int64_t> single_i64;
+    static NumberValueSet<uint8_t> single_u8;
+    static NumberValueSet<uint16_t> single_u16;
+    static NumberValueSet<uint32_t> single_u32;
+    static NumberValueSet<uint64_t> single_u64;
+    static NumberValueSet<float> single_float;
+    static NumberValueSet<double> single_double;
+    static bool initialized = false;
+
+    if (!initialized){
+        // Add range that covers every possible value
+        single_i8.add_range(NumberValueSet<int8_t>::Range(std::numeric_limits<int8_t>::min(), std::numeric_limits<int8_t>::max(), 1));
+        single_i16.add_range(NumberValueSet<int16_t>::Range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 1));
+        single_i32.add_range(NumberValueSet<int32_t>::Range(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max(), 1));
+        single_i64.add_range(NumberValueSet<int64_t>::Range(std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max(), 1));
+        single_u8.add_range(NumberValueSet<uint8_t>::Range(std::numeric_limits<uint8_t>::min(), std::numeric_limits<uint8_t>::max(), 1));
+        single_u16.add_range(NumberValueSet<uint16_t>::Range(std::numeric_limits<uint16_t>::min(), std::numeric_limits<uint16_t>::max(), 1));
+        single_u32.add_range(NumberValueSet<uint32_t>::Range(std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max(), 1));
+        single_u64.add_range(NumberValueSet<uint64_t>::Range(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max(), 1));
+        single_float.add_range(NumberValueSet<float>::Range(std::numeric_limits<float>::min(), std::numeric_limits<float>::max(), 1));
+        single_double.add_range(NumberValueSet<double>::Range(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), 1));
+        initialized = true;
+    }
+
+    // Create copy
+    switch (_kind){
+    case NumericType::Kind::INT8:
+        return NumberValueSetFactory<int8_t>::make_unique(new NumberValueSet<int8_t>(single_i8));
+    case NumericType::Kind::INT16:
+        return NumberValueSetFactory<int16_t>::make_unique(new NumberValueSet<int16_t>(single_i16));
+    case NumericType::Kind::INT32:
+        return NumberValueSetFactory<int32_t>::make_unique(new NumberValueSet<int32_t>(single_i32));
+    case NumericType::Kind::INT64:
+        return NumberValueSetFactory<int64_t>::make_unique(new NumberValueSet<int64_t>(single_i64));
+    case NumericType::Kind::UINT8:
+        return NumberValueSetFactory<uint8_t>::make_unique(new NumberValueSet<uint8_t>(single_u8));
+    case NumericType::Kind::UINT16:
+        return NumberValueSetFactory<uint16_t>::make_unique(new NumberValueSet<uint16_t>(single_u16));
+    case NumericType::Kind::UINT32:
+        return NumberValueSetFactory<uint32_t>::make_unique(new NumberValueSet<uint32_t>(single_u32));
+    case NumericType::Kind::UINT64:
+        return NumberValueSetFactory<uint64_t>::make_unique(new NumberValueSet<uint64_t>(single_u64));
+    case NumericType::Kind::FLOAT:
+        return NumberValueSetFactory<float>::make_unique(new NumberValueSet<float>(single_float));
+    case NumericType::Kind::DOUBLE:
+        return NumberValueSetFactory<double>::make_unique(new NumberValueSet<double>(single_double));
+    }
+}
+
+NumericType::NumericType(NumericType::Kind kind):
     _kind(kind)
 {}
 
 // UnnamedStructType:
 
-const UnnamedStructType* UnnamedStructType::get_struct(const std::vector<Type*>& field_types){
-    static std::vector<UnnamedStructType> structs;
+const UnnamedStructType* UnnamedStructType::get_struct(const std::vector<const Type*>& ordered_field_types){
+    static std::vector<UnnamedStructType> struct_singletons;
     const UnnamedStructType* ret = nullptr;
 
-    for (const UnnamedStructType& other : structs){
-        auto& other_field_types = other.get_field_types();
-        if (field_types.size() != other_field_types.size()){
+    for (const UnnamedStructType& other : struct_singletons){
+        std::span<const Type *const> other_ordered_field_types = other.get_ordered_field_types();
+        if (ordered_field_types.size() != other_ordered_field_types.size()){
             continue;
         }
-        for (std::size_t i = 0; i < field_types.size(); i++){
-            if (field_types[i] != other_field_types[i]){
+        for (std::size_t i = 0; i < ordered_field_types.size(); i++){
+            if (ordered_field_types[i] != other_ordered_field_types[i]){
                 ret = &other;
                 break;
             }
@@ -81,16 +138,24 @@ const UnnamedStructType* UnnamedStructType::get_struct(const std::vector<Type*>&
         }
     }
     if (ret == nullptr){
-        structs.push_back(UnnamedStructType(field_types));
-        ret = &structs.back();
+        struct_singletons.push_back(UnnamedStructType(ordered_field_types));
+        ret = &struct_singletons.back();
     }
     return ret;
 }
 
-const std::vector<Type*>& UnnamedStructType::get_field_types() const {
-    return _field_types;
+std::span<const Type* const> UnnamedStructType::get_ordered_field_types() const {
+    return std::span<const Type* const>(_ordered_field_types.data(), _ordered_field_types.size());;
 }
 
-UnnamedStructType::UnnamedStructType(const std::vector<Type*>& field_types):
-    _field_types(field_types)
+std::unique_ptr<ValueSet> UnnamedStructType::create_default_value_set() const {
+    std::vector<std::unique_ptr<ValueSet>> ordered_types;
+    for (const Type* const field : _ordered_field_types){
+        ordered_types.push_back(field->create_default_value_set());
+    }
+    return StructValueSetFactory::make_unique(new StructValueSet(std::move(ordered_types)));
+}
+
+UnnamedStructType::UnnamedStructType(const std::vector<const Type*>& ordered_field_types):
+    _ordered_field_types(ordered_field_types)
 {}

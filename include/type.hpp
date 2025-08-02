@@ -3,44 +3,49 @@
 #include "Common/utils.hpp"
 #include "Symbols/symbol.hpp"
 #include <memory>
+#include <span>
 #include <string_view>
 #include <unordered_map>
 
 namespace Cycle {
-    struct Type : public AbstractClass {};
-    
-    struct PrimitiveType : public Type {
-        enum class Kind;
-        
-        static const PrimitiveType* get_i8();
-        static const PrimitiveType* get_i16();
-        static const PrimitiveType* get_i32();
-        static const PrimitiveType* get_i64();
-        static const PrimitiveType* get_u8();
-        static const PrimitiveType* get_u16();
-        static const PrimitiveType* get_u32();
-        static const PrimitiveType* get_u64();
-        static const PrimitiveType* get_float();
-        static const PrimitiveType* get_double();
-    private:
-        PrimitiveType(PrimitiveType::Kind kind);
-        PrimitiveType::Kind _kind;
+    struct ValueSet;
 
-        void polymorphism() const override {}
+    struct Type {
+        virtual std::unique_ptr<ValueSet> create_default_value_set() const = 0;
+    };
+    
+    struct NumericType : public Type {
+        enum class Kind;
+
+        static const NumericType* get_i8();
+        static const NumericType* get_i16();
+        static const NumericType* get_i32();
+        static const NumericType* get_i64();
+        static const NumericType* get_u8();
+        static const NumericType* get_u16();
+        static const NumericType* get_u32();
+        static const NumericType* get_u64();
+        static const NumericType* get_float();
+        static const NumericType* get_double();
+
+        std::unique_ptr<ValueSet> create_default_value_set() const override;
+    private:
+        NumericType(NumericType::Kind kind);
+        NumericType::Kind _kind;
     };
 
     struct UnnamedStructType : public Type {
-        static const UnnamedStructType* get_struct(const std::vector<Type*>& field_types);
-        const std::vector<Type*>& get_field_types() const;
-    private:
-        UnnamedStructType(const std::vector<Type*>& field_types);
-        std::vector<Type*> _field_types;
+        static const UnnamedStructType* get_struct(const std::vector<const Type*>& ordered_field_types);
+        std::span<const Type* const> get_ordered_field_types() const;
 
-        void polymorphism() const override {}
+        std::unique_ptr<ValueSet> create_default_value_set() const override;
+    private:
+        UnnamedStructType(const std::vector<const Type*>& ordered_field_types);
+        std::vector<const Type*> _ordered_field_types;
     };
 }
 
-enum class Cycle::PrimitiveType::Kind {
+enum class Cycle::NumericType::Kind {
     INT8 = 1,
     INT16,
     INT32,
