@@ -1,0 +1,95 @@
+#pragma once
+
+#include <type_traits>
+#include <format>
+
+namespace Cycle {
+    template <typename T>
+    concept IsInteger = std::is_integral_v<T> && !std::is_same_v<T, bool>;
+    template <typename T>
+    concept IsSignedInteger = IsInteger<T> && std::is_signed_v<T>;
+    template <typename T>
+    concept IsUnsignedInteger = IsInteger<T> && std::is_unsigned_v<T>;
+    template <typename T>
+    concept IsFloat = std::is_floating_point_v<T>;
+    template <typename T>
+    concept IsNumeric = IsInteger<T> || IsFloat<T>;
+
+    template <typename T>
+    requires IsNumeric<T>
+    struct NumericWrapper {
+        NumericWrapper() = default;
+        NumericWrapper(const NumericWrapper<T>&) = default;
+        NumericWrapper(T number): _number(number){}
+
+        explicit operator T() const { return _number; }
+        T value() const { return _number; }
+
+        template <typename U>
+        requires IsNumeric<U>
+        bool operator==(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        bool operator<(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        bool operator>(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        bool operator<=(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        bool operator>=(const NumericWrapper<U>& other) const;
+
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<std::common_type_t<T, U>> operator+(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<std::common_type_t<T, U>> operator-(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<long double> operator%(const NumericWrapper<U>& other) const;
+
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator=(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator+=(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator-=(const NumericWrapper<U>& other);
+    private:
+        T _number;
+    };
+
+    template <typename T, typename U, typename V>
+    requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
+    bool compare_floats(T a, U b, V epsilon);
+
+    template <typename T, typename U>
+    requires IsNumeric<T> && IsNumeric<U>
+    bool compare_numerics(T a, U b);
+
+    template <typename T, typename U>
+    requires IsNumeric<T> && IsNumeric<U>
+    long double modulus(T a, U b);
+
+    template <typename T>
+    requires IsNumeric<T>
+    T absolute(T num);
+}
+
+#include "numerics.tpp"
+
+namespace std {
+    template <typename T>
+    struct std::formatter<Cycle::NumericWrapper<T>> : std::formatter<std::string> {
+        auto format(Cycle::NumericWrapper<T> numeric, format_context& ctx) const {
+            return std::formatter<std::string>::format(
+                std::format("{}", numeric.value()), ctx
+            );
+        }
+    };
+}

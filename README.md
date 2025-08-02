@@ -13,7 +13,7 @@ The **Cycle programming language** is extremely hypothetical and building a work
 ## Building the Project
 
 Manual dependencies:
-- Compiler supporting C++23
+- C++23 compiler
 - Python3
 - CMake 3.16+
 - LLVM 18.1.8 (Static linking with dynamic C libraries)
