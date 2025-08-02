@@ -52,15 +52,15 @@ bool Cycle::NumberValueSet<T>::Range::contains(T value) const {
 template <typename T>
 requires Cycle::IsNumeric<T>
 bool Cycle::NumberValueSet<T>::Range::try_merge_with(const Range& other){
-    if (_step != other.get_step()) return false;
+    if (!compare_numerics(_step, other.get_step())) return false;
 
-    // If previous step
-    if (_min - _step == other.get_max()){
+    // If previous step, append to eachother
+    if (compare_numerics(_min - _step, other.get_max())){
         _merge_with(other);
         return true;
     }
-    // If next step
-    if (_max + _step == other.get_min()){
+    // If next step, append to eachother
+    if (compare_numerics(_max + _step, other.get_min())){
         _merge_with(other);
         return true;
     }
@@ -68,7 +68,7 @@ bool Cycle::NumberValueSet<T>::Range::try_merge_with(const Range& other){
     if (_min > other.get_max() || _max < other.get_min()){
         return false;
     }
-    // Check if overlaps
+    // Check if there's an overlap
     T smaller_min = std::min(_min, other.get_min());
     T bigger_min = std::max(_min, other.get_min());
     if (compare_numerics(modulus(bigger_min - smaller_min, _step), (T)0)){
@@ -83,7 +83,7 @@ requires Cycle::IsNumeric<T>
 void Cycle::NumberValueSet<T>::Range::_merge_with(const Range& other){
     _min = std::min(_min, other.get_min());
     _max = std::max(_max, other.get_max());
-    *this = Range(_min, _max, _step); // Reconstruct after modifications
+    *this = Range(_min, _max, _step);
 }
 
 // NumberValueSet<T>:
@@ -108,13 +108,10 @@ void Cycle::NumberValueSet<T>::add_range(const Range& value){
 template <typename T>
 requires Cycle::IsNumeric<T>
 bool Cycle::NumberValueSet<T>::contains(T value) const {
-    for (const T& possible_value : _possible_values){
-        if (value == possible_value) return true;
-    }
+    if (_possible_values.contains(value)) return true;
+
     for (const Range& possible_range : _possible_ranges){
-        if (possible_range.contains(value)){
-            return true;
-        }
+        if (possible_range.contains(value)) return true;
     }
     return false;
 }
@@ -157,7 +154,7 @@ void Cycle::NumberValueSet<T>::_promote_values_to_range(){
         T first_step = second_value - first_value;
         T second_step = third_value - second_value;
 
-        if (first_step != second_step){
+        if (!compare_numerics(first_step, second_step)){
             continue;
         }
         T min = first_value;
@@ -167,7 +164,7 @@ void Cycle::NumberValueSet<T>::_promote_values_to_range(){
         i += 3;
         while (i < sorted.size()){
             T new_step = sorted[i] - sorted[i - 1];
-            if (step != new_step) break;
+            if (!compare_numerics(step, new_step)) break;
             max = sorted[i];
             i++;
         }
@@ -183,10 +180,20 @@ void Cycle::NumberValueSet<T>::_promote_values_to_range(){
         _possible_values.erase(value);
     }
     // Try to fit remaining values into new ranges
-    for (T value : _possible_values){
+    std::vector<T> leftover(_possible_values.begin(), _possible_values.end());
+    std::vector<T> still_unmerged;
+
+    for (const T& value : leftover){
+        bool merged = false;
         for (Range& range : _possible_ranges){
             Range new_range(value, value, range.get_step());
-            if (range.try_merge_with(new_range)) return;
+            if (range.try_merge_with(new_range)){
+                merged = true;
+                break;
+            }
+        }
+        if (merged){
+            _possible_values.erase(value);
         }
     }
 }
@@ -194,8 +201,16 @@ void Cycle::NumberValueSet<T>::_promote_values_to_range(){
 template <typename T>
 requires Cycle::IsNumeric<T>
 void Cycle::NumberValueSet<T>::_merge_new_range(const Range& new_range){
-    for (Range& range : _possible_ranges){
-        if (range.try_merge_with(new_range)) return;
+    std::vector<Range> merged_ranges;
+    Range to_merge = new_range;
+
+    auto it = _possible_ranges.begin();
+    while (it != _possible_ranges.end()){
+        if (to_merge.try_merge_with(*it)){
+            it = _possible_ranges.erase(it); // remove and continue merging
+            continue;
+        }
+        it++;
     }
-    _possible_ranges.push_back(new_range);
+    _possible_ranges.push_back(to_merge);
 }
