@@ -37,23 +37,12 @@ namespace Cycle {
     template <typename Comparison, typename InputType>
     constexpr bool ptr_cmp(const InputType* ptr){
         if constexpr (!std::is_polymorphic_v<Comparison>){
-            throw InternalError("Couldn't compare pointers because comparison type '{}' does not contain RTTI data", type_name<Comparison>());
+            throw InternalError("Pointer comparison failed: comparison type '{}' does not contain RTTI data", type_name<Comparison>());
         }
         if constexpr (!std::is_polymorphic_v<InputType>){
-            throw InternalError("Couldn't compare pointers because input type '{}' does not contain RTTI data", type_name<InputType>());
+            throw InternalError("Pointer comparison failed: input type '{}' does not contain RTTI data", type_name<InputType>());
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
-    }
-    template <typename T>
-    requires IsNumeric<T>
-    constexpr T modulus(T a, T b){
-        if constexpr (IsInteger<T>){
-            return a % b;
-        } else if constexpr (IsFloat<T>){
-            return std::fmod(a, b);
-        } else {
-            throw InternalError("Modulus function failed");
-        }
     }
     template <typename T>
     requires IsFloat<T>
@@ -69,7 +58,21 @@ namespace Cycle {
             T min_epsilon = std::numeric_limits<T>::epsilon();
             return compare_floats(a, b, min_epsilon * 2);
         } else {
-            throw InternalError("Compare numeric function failed");
+            throw InternalError("Compare numeric function failed: unsupported type");
+        }
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    constexpr long double modulus(T a, T b){
+        if constexpr (compare_numerics(b, 0)){
+            throw InternalError("Modulus function failed: division by zero");
+        }
+        if constexpr (IsInteger<T>){
+            return (long double)(a % b);
+        } else if constexpr (IsFloat<T>){
+            return std::fmod(a, b);
+        } else {
+            throw InternalError("Modulus function failed: unsupported type");
         }
     }
     template <typename T>
@@ -83,7 +86,7 @@ namespace Cycle {
             T min_epsilon = std::numeric_limits<T>::epsilon();
             return (num < min_epsilon * 2)? -num : num;
         } else {
-            throw InternalError("Absolute function failed");
+            throw InternalError("Absolute function failed: unsupported type");
         }
     }
 
