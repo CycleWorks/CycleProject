@@ -1,7 +1,7 @@
 #include "Common/write.hpp"
 #include "Common/errors.hpp"
 
-// NOTE: No pointer pointer shall be nullptr
+// NOTE: No pointer shall be nullptr
 
 int main(int argc, char** argv){
     try {
