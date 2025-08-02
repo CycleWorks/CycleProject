@@ -48,19 +48,20 @@ namespace Cycle {
     requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
     bool compare_floats(T a, U b, V epsilon){
         using CommonType = std::common_type_t<T, U, V>;
-        return std::abs(CommonType(a) - CommonType(b)) <= CommonType(epsilon);
+        CommonType diff = std::abs(CommonType(a) - CommonType(b));
+        CommonType max_val = std::max(std::abs(CommonType(a)), std::abs(CommonType(b)));
+        return diff <= CommonType(epsilon) * max_val || diff <= CommonType(epsilon);
     }
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
-    bool compare_numerics(T a, U b){
+    bool compare_numerics(T a, U b) {
         using CommonType = std::common_type_t<T, U>;
 
-        if constexpr (IsInteger<T> && IsInteger<U>){
+        if constexpr (IsInteger<T> && IsInteger<U>) {
             return CommonType(a) == CommonType(b);
-        }
-        else if constexpr (IsFloat<T> || IsFloat<U>){
-            CommonType min_epsilon = std::numeric_limits<CommonType>::epsilon();
-            return compare_floats(CommonType(a), CommonType(b), min_epsilon * 2);
+        } else if constexpr (IsFloat<T> || IsFloat<U>) {
+            CommonType epsilon = std::numeric_limits<CommonType>::epsilon();
+            return compare_floats(CommonType(a), CommonType(b), epsilon * 2);
         } else {
             throw InternalError("Compare numeric function failed: unsupported type(s)");
         }
@@ -86,12 +87,11 @@ namespace Cycle {
     requires IsNumeric<T>
     T absolute(T num){
         if constexpr (IsSignedInteger<T>){
-            return (num < 0)? -num : num;
+            return (num < 0) ? -num : num;
         } else if constexpr (IsUnsignedInteger<T>){
             return num;
         } else if constexpr (IsFloat<T>){
-            T min_epsilon = std::numeric_limits<T>::epsilon();
-            return (num < min_epsilon * 2)? -num : num;
+            return std::abs(num);
         } else {
             throw InternalError("Absolute function failed: unsupported type");
         }
