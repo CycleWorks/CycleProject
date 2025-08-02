@@ -41,7 +41,7 @@ namespace Cycle {
     #else
         #warning Compiling on operating system with no supported console color support
 
-        enum class OutputColor {
+        enum class OutputColor { // Doesn't matter at this point
             RESET = 0,
             BLACK,
             BLUE,
