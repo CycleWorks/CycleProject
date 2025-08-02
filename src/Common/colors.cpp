@@ -1,7 +1,7 @@
 #include "Common/colors.hpp"
 #include <print>
 
-uint _windows_default_color; // Set in _init_colors
+int _windows_default_color; // Set in _init_colors
 
 void _init_colors(){
     #ifdef OS_WINDOWS

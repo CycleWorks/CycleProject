@@ -9,7 +9,7 @@ void Cycle::basic_writeln(std::ostream& stream, const std::string& output){
     std::lock_guard lock(write_mutex);
 
     std::string buffer;
-    for (uint i = 0; i < output.size(); i++){
+    for (std::size_t i = 0; i < output.size(); i++){
         if (output[i] != '@'){
             buffer += output[i];
             continue;

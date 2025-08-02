@@ -2,6 +2,7 @@
 
 #include "system.hpp"
 #include <unordered_map>
+#include <string_view>
 
 namespace Cycle {
     // Console text color (Values may differ between different systems)
