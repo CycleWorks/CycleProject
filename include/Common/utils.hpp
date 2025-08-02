@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Common/errors.hpp"
 #include "system.hpp"
 #include <filesystem>
 #include <functional>
 #include <string_view>
 #include <memory>
 #include <stdfloat>
+#include <type_traits>
+#include <cmath>
 
 namespace fs = std::filesystem;
 using uint = unsigned int;
@@ -17,7 +20,11 @@ namespace Cycle {
     constexpr std::string_view TAB_SPACE = "    ";
 
     template <typename T>
-    concept IsInteger = std::is_integral_v<T>;
+    concept IsInteger = std::is_integral_v<T> && !std::is_same_v<T, bool>;
+    template <typename T>
+    concept IsSignedInteger = IsInteger<T> && std::is_signed_v<T>;
+    template <typename T>
+    concept IsUnsignedInteger = IsInteger<T> && std::is_unsigned_v<T>;
     template <typename T>
     concept IsFloat = std::is_floating_point_v<T>;
     template <typename T>
@@ -28,35 +35,56 @@ namespace Cycle {
         return typeid(T).name();
     }
     template <typename Comparison, typename InputType>
-    bool ptr_cmp(const InputType* ptr){
-        if (!std::is_polymorphic<Comparison>::value){
+    constexpr bool ptr_cmp(const InputType* ptr){
+        if constexpr (!std::is_polymorphic_v<Comparison>){
             throw InternalError("Couldn't compare pointers because comparison type '{}' does not contain RTTI data", type_name<Comparison>());
         }
-        if (!std::is_polymorphic<InputType>::value){
+        if constexpr (!std::is_polymorphic_v<InputType>){
             throw InternalError("Couldn't compare pointers because input type '{}' does not contain RTTI data", type_name<InputType>());
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
     }
     template <typename T>
+    requires IsNumeric<T>
     constexpr T modulus(T a, T b){
-        if constexpr (std::is_integral<T>::value){
+        if constexpr (IsInteger<T>){
             return a % b;
-        } else {
+        } else if constexpr (IsFloat<T>){
             return std::fmod(a, b);
+        } else {
+            throw InternalError("Modulus function failed");
         }
     }
     template <typename T>
     requires IsFloat<T>
-    bool compare_floats(T a, T b, T epsilon){
+    constexpr bool compare_floats(T a, T b, T epsilon){
         return std::fabs(a - b) <= epsilon;
     }
     template <typename T>
     requires IsNumeric<T>
-    bool compare_primitives(T a, T b, T epsilon){
-        if constexpr (std::is_integral<T>::value){
-
+    constexpr bool compare_numerics(T a, T b){
+        if constexpr (IsInteger<T>){
+            return a == b;
+        } else if constexpr (IsFloat<T>){
+            T min_epsilon = std::numeric_limits<T>::epsilon();
+            return compare_floats(a, b, min_epsilon * 2);
+        } else {
+            throw InternalError("Compare numeric function failed");
         }
-        return std::fabs(a - b) <= epsilon;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    T absolute(T num){
+        if constexpr (IsSignedInteger<T>){
+            return (num < 0)? -num : num;
+        } else if constexpr (IsUnsignedInteger<T>){
+            return num;
+        } else if constexpr (IsFloat<T>){
+            T min_epsilon = std::numeric_limits<T>::epsilon();
+            return (num < min_epsilon * 2)? -num : num;
+        } else {
+            throw InternalError("Absolute function failed");
+        }
     }
 
     struct AbstractClass {
