@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/utils.hpp"
+#include "Common/numerics.hpp"
 #include "type.hpp"
 #include <cstdint>
 #include <set>
@@ -28,23 +29,23 @@ namespace Cycle {
     requires IsNumeric<T>
     struct NumberValueSet : public ValueSet {
         struct Range {
-            Range(T min, T max, T step);
-            void set_min(T min);
-            void set_max(T max);
-            void set_step(T step);
-            T get_min() const;
-            T get_max() const;
-            T get_step() const;
+            Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step);
+            void set_min(NumericWrapper<T> min);
+            void set_max(NumericWrapper<T> max);
+            void set_step(NumericWrapper<T> step);
+            NumericWrapper<T> get_min() const;
+            NumericWrapper<T> get_max() const;
+            NumericWrapper<T> get_step() const;
 
-            bool contains(T value) const;
+            bool contains(NumericWrapper<T> value) const;
             bool try_merge_with(const Range& other); // Returns true if merged
         private:
             void _merge_with(const Range& other);
-            T _min;
-            T _max;
-            T _step;
+            NumericWrapper<T> _min;
+            NumericWrapper<T> _max;
+            NumericWrapper<T> _step;
         };
-        void add_value(T value);
+        void add_value(NumericWrapper<T> value);
         void add_range(const Range& value);
         bool contains(T value) const;
         virtual std::string print_value_set(uint indentation = 0) const override;
@@ -52,7 +53,7 @@ namespace Cycle {
         void _promote_values_to_range();
         void _merge_new_range(const Range& new_range);
 
-        std::set<T> _possible_values;
+        std::set<NumericWrapper<T>> _possible_values;
         std::vector<Range> _possible_ranges;
     };
 

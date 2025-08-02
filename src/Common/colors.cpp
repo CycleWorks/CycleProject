@@ -7,7 +7,7 @@ void _init_colors(){
     #ifdef OS_WINDOWS
         CONSOLE_SCREEN_BUFFER_INFO info;
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (GetConsoleScreenBufferInfo(hConsole, &info)) {
+        if (GetConsoleScreenBufferInfo(hConsole, &info)){
             _windows_default_color = info.wAttributes & 0x0F;
         }
     #endif
