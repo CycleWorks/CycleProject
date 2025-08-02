@@ -17,7 +17,6 @@ Manual dependencies:
 - Python3
 - CMake 3.16+
 - LLVM 18.1.8 (Static linking with dynamic C libraries)
-- Clangd for linting (optional)
 
 To resolve python dependencies, run the following commands in your terminal:
 ```bash
@@ -43,4 +42,4 @@ To reset build files and settings, run the following command in your terminal:
 python3 reset.py
 ```
 
----
+For linting, CMake exports compile commands in ```./build/``` after first build (at configure time)

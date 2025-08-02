@@ -1,13 +1,66 @@
-# Platform-dependent bloat
-.git/*
-.cache/*
-build/*
+# Build artifacts
+.cache/
+build/
+bin/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.out
+*.log
+*.pyc
+*.class
 build_settings.json
-bin/*
 
-# Useless
-whiteboard.txt
+# Backup & temporary files
+*~
+*.tmp
+*.bak
+*.swp
 
-# With Clangd LSP
-.vscode/*
-!.vscode/settings.json
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+
+# Ninja
+.ninja_deps
+.ninja_log
+
+# Python virtual environments
+venv/
+
+# VSCode
+.vscode/
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+CMakeSettings.json
+
+# CLion / IntelliJ / JetBrains
+.idea/
+*.iml
+
+# Eclipse
+.project
+.cproject
+.settings/
+.metadata/
+
+# Qt Creator
+*.pro.user
+*.user
+*.autosave
+
+# macOS
+.DS_Store
+
+# Zed Editor
+.zed/
