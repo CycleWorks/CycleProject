@@ -3,5 +3,6 @@
 #include "Common/utils.hpp"
 
 namespace Cycle::Nodes {
-    struct BaseNode : public AbstractClass {};
+    struct BaseNode : public AbstractClass {
+    };
 }
