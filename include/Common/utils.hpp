@@ -57,9 +57,9 @@ namespace Cycle {
     bool compare_numerics(T a, U b) {
         using CommonType = std::common_type_t<T, U>;
 
-        if constexpr (IsInteger<T> && IsInteger<U>) {
+        if constexpr (IsInteger<T> && IsInteger<U>){
             return CommonType(a) == CommonType(b);
-        } else if constexpr (IsFloat<T> || IsFloat<U>) {
+        } else if constexpr (IsFloat<T> || IsFloat<U>){
             CommonType epsilon = std::numeric_limits<CommonType>::epsilon();
             return compare_floats(CommonType(a), CommonType(b), epsilon * 2);
         } else {
