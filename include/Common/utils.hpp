@@ -35,7 +35,7 @@ namespace Cycle {
         return typeid(T).name();
     }
     template <typename Comparison, typename InputType>
-    constexpr bool ptr_cmp(const InputType* ptr){
+    bool ptr_cmp(const InputType* ptr){
         if constexpr (!std::is_polymorphic_v<Comparison>){
             throw InternalError("Pointer comparison failed: comparison type '{}' does not contain RTTI data", type_name<Comparison>());
         }
@@ -44,35 +44,42 @@ namespace Cycle {
         }
         return dynamic_cast<const Comparison*>(ptr) != nullptr;
     }
-    template <typename T>
-    requires IsFloat<T>
-    constexpr bool compare_floats(T a, T b, T epsilon){
-        return std::fabs(a - b) <= epsilon;
+    template <typename T, typename U, typename V>
+    requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
+    bool compare_floats(T a, U b, V epsilon){
+        using CommonType = std::common_type_t<T, U, V>;
+        return std::abs(CommonType(a) - CommonType(b)) <= CommonType(epsilon);
     }
-    template <typename T>
-    requires IsNumeric<T>
-    constexpr bool compare_numerics(T a, T b){
-        if constexpr (IsInteger<T>){
-            return a == b;
-        } else if constexpr (IsFloat<T>){
-            T min_epsilon = std::numeric_limits<T>::epsilon();
-            return compare_floats(a, b, min_epsilon * 2);
+    template <typename T, typename U>
+    requires IsNumeric<T> && IsNumeric<U>
+    bool compare_numerics(T a, U b){
+        using CommonType = std::common_type_t<T, U>;
+
+        if constexpr (IsInteger<T> && IsInteger<U>){
+            return CommonType(a) == CommonType(b);
+        }
+        else if constexpr (IsFloat<T> || IsFloat<U>){
+            CommonType min_epsilon = std::numeric_limits<CommonType>::epsilon();
+            return compare_floats(CommonType(a), CommonType(b), min_epsilon * 2);
         } else {
-            throw InternalError("Compare numeric function failed: unsupported type");
+            throw InternalError("Compare numeric function failed: unsupported type(s)");
         }
     }
-    template <typename T>
-    requires IsNumeric<T>
-    constexpr long double modulus(T a, T b){
-        if constexpr (compare_numerics(b, 0)){
+    template <typename T, typename U>
+    requires IsNumeric<T> && IsNumeric<U>
+    long double modulus(T a, U b){
+        using CommonType = std::common_type_t<T, U>;
+
+        if (compare_numerics(CommonType(b), CommonType(0))){
             throw InternalError("Modulus function failed: division by zero");
         }
-        if constexpr (IsInteger<T>){
-            return (long double)(a % b);
-        } else if constexpr (IsFloat<T>){
-            return std::fmod(a, b);
+        if constexpr (IsInteger<T> && IsInteger<U>){
+            return (long double)(CommonType(a) % CommonType(b));
+        }
+        else if constexpr (IsFloat<T> || IsFloat<U>){
+            return std::fmod(CommonType(a), CommonType(b));
         } else {
-            throw InternalError("Modulus function failed: unsupported type");
+            throw InternalError("Modulus function failed: unsupported type(s)");
         }
     }
     template <typename T>
