@@ -36,3 +36,11 @@ python3 build.py
 \> All settings entered on first build will be saved for future builds
 <br>
 \> The final compiled executable should be located in ```./bin/```
+
+To reset build files and settings, run the following command in your terminal:
+
+```bash
+python3 reset.py
+```
+
+---
