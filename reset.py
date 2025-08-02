@@ -4,14 +4,14 @@ import shutil
 
 # ---- Helpers ----
 
-def delete_file(file_path: Path):
+def delete_file(file_path: Path) -> None:
     if file_path.is_file():
         try:
             file_path.unlink()
         except:
-            pass
+            print(f"Couldn't delete file \"{file_path}\"")
 
-def empty_folder_contents(folder_path: Path):
+def empty_folder_contents(folder_path: Path) -> None:
     if folder_path.is_dir():
         for child in folder_path.iterdir():
             try:
@@ -20,11 +20,11 @@ def empty_folder_contents(folder_path: Path):
                 elif child.is_dir():
                     shutil.rmtree(child)
             except:
-                pass
+                print(f"Couldn't delete entry at path \"{child}\"")
 
 # ---- Main function ----
 
-def main():
+def main() -> None:
     this_script_path = Path(__file__).resolve().parent
     build_settings_file_path = this_script_path / "build_settings.json"
     build_folder_path = this_script_path / "build"
@@ -40,13 +40,13 @@ def main():
             break
         if answer.upper() == "N":
             print("Deletion aborted")
-            sys.exit()
+            sys.exit(-1)
         print("Invalid answer")
 
     delete_file(build_settings_file_path)
     empty_folder_contents(build_folder_path)
     empty_folder_contents(bin_folder_path)
-    print("Build files reset successfully\n")
+    print("Build files deleted\n")
 
 if __name__ == "__main__":
     main()
