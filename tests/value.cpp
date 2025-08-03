@@ -3,110 +3,63 @@
 #include "Common/write.hpp"
 #include "value.hpp"
 
-// TODO Add tests for uint, float and double
+TEMPLATE_TEST_CASE("Signed NumberValueSet verification", "[NumberValueSet][signed]",
+    int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double)
+{
+    using ValueSetType = Cycle::NumberValueSet<TestType>;
+    std::vector<TestType> test_signs;
 
-TEST_CASE("NumberValueSet validation (positive integer values)", "[Value][Integer][Positive]"){
-    using ValueSetI32 = Cycle::NumberValueSet<int32_t>;
-    ValueSetI32 set;
+    if constexpr (Cycle::IsUnsignedInteger<TestType>){
+        test_signs = {1};
+    } else {
+        test_signs = {1, -1};
+    }
 
-    set.add_value(10);
-    set.add_value(20);
-    set.add_value(30);
-    set.add_value(40);
+    for (const TestType& sign : test_signs){
+        ValueSetType set;
 
-    set.add_value(11);
-    set.add_value(13);
-    set.add_value(17);
-    set.add_value(19);
+        set.add_value(5 * sign);
+        set.add_value(10 * sign);
+        set.add_value(15 * sign);
+        set.add_value(20 * sign);
 
-    set.add_range(ValueSetI32::Range(200, 300, 20));
-    set.add_range(ValueSetI32::Range(150, 300, 50));
-    set.add_range(ValueSetI32::Range(300, 12000, 50));
+        REQUIRE(set.contains(5 * sign));
+        REQUIRE(set.contains(10 * sign));
+        REQUIRE(set.contains(15 * sign));
+        REQUIRE(set.contains(20 * sign));
+        REQUIRE_FALSE(set.contains(4 * sign));
+        REQUIRE_FALSE(set.contains(6 * sign));
+        REQUIRE_FALSE(set.contains(7 * sign));
+        REQUIRE_FALSE(set.contains(8 * sign));
+        REQUIRE_FALSE(set.contains(9 * sign));
+        REQUIRE_FALSE(set.contains(11 * sign));
 
-    Cycle::writeln("Printed value: {}", set.print_value_set());
+        set.add_range(typename ValueSetType::Range(40 * sign, 120 * sign, 20 * sign));
+        set.add_range(typename ValueSetType::Range(21 * sign, 70 * sign, 7 * sign));
 
-    REQUIRE(set.contains(10));
-    REQUIRE(set.contains(20));
-    REQUIRE(set.contains(30));
-    REQUIRE(set.contains(40));
+        REQUIRE(set.contains(40 * sign));
+        REQUIRE(set.contains(60 * sign));
+        REQUIRE(set.contains(80 * sign));
+        REQUIRE(set.contains(100 * sign));
+        REQUIRE(set.contains(120 * sign));
+        REQUIRE(set.contains(21 * sign));
+        REQUIRE(set.contains(28 * sign));
+        REQUIRE(set.contains(35 * sign));
+        REQUIRE(set.contains(42 * sign));
+        REQUIRE(set.contains(49 * sign));
+        REQUIRE(set.contains(56 * sign));
+        REQUIRE(set.contains(63 * sign));
+        REQUIRE(set.contains(70 * sign));
 
-    REQUIRE(set.contains(11));
-    REQUIRE(set.contains(13));
-    REQUIRE(set.contains(17));
-    REQUIRE(set.contains(19));
+        REQUIRE_FALSE(set.contains(39 * sign));
+        REQUIRE_FALSE(set.contains(41 * sign));
+        REQUIRE_FALSE(set.contains(119 * sign));
+        REQUIRE_FALSE(set.contains(121 * sign));
 
-    REQUIRE(set.contains(200));
-    REQUIRE(set.contains(200));
-    REQUIRE(set.contains(240));
-    REQUIRE(set.contains(280));
-    REQUIRE(set.contains(300));
+        REQUIRE_FALSE(set.contains(0));
+        REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::min()));
+        REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::max()));
 
-    REQUIRE(set.contains(150));
-    REQUIRE(set.contains(200));
-    REQUIRE(set.contains(250));
-    REQUIRE(set.contains(300));
-
-    REQUIRE_FALSE(set.contains(0));
-    REQUIRE_FALSE(set.contains(5));
-    REQUIRE_FALSE(set.contains(15));
-    REQUIRE_FALSE(set.contains(25));
-
-    REQUIRE_FALSE(set.contains(151));
-    REQUIRE_FALSE(set.contains(199));
-    REQUIRE_FALSE(set.contains(249));
-    REQUIRE_FALSE(set.contains(299));
-    REQUIRE_FALSE(set.contains(301));
-}
-
-TEST_CASE("NumberValueSet validation (negative integer values)", "[Value][Integer][Negative]"){
-    using ValueSetI32 = Cycle::NumberValueSet<int32_t>;
-    ValueSetI32 set;
-
-    set.add_value(-10);
-    set.add_value(-20);
-    set.add_value(-30);
-    set.add_value(-40);
-
-    set.add_value(-11);
-    set.add_value(-13);
-    set.add_value(-17);
-    set.add_value(-19);
-
-    set.add_range(ValueSetI32::Range(-200, -300, -20));
-    set.add_range(ValueSetI32::Range(-150, -300, -50));
-    set.add_range(ValueSetI32::Range(-300, -12000, -50));
-
-    Cycle::writeln("Printed value: {}", set.print_value_set());
-
-    REQUIRE(set.contains(-10));
-    REQUIRE(set.contains(-20));
-    REQUIRE(set.contains(-30));
-    REQUIRE(set.contains(-40));
-
-    REQUIRE(set.contains(-11));
-    REQUIRE(set.contains(-13));
-    REQUIRE(set.contains(-17));
-    REQUIRE(set.contains(-19));
-
-    REQUIRE(set.contains(-200));
-    REQUIRE(set.contains(-200));
-    REQUIRE(set.contains(-240));
-    REQUIRE(set.contains(-280));
-    REQUIRE(set.contains(-300));
-
-    REQUIRE(set.contains(-150));
-    REQUIRE(set.contains(-200));
-    REQUIRE(set.contains(-250));
-    REQUIRE(set.contains(-300));
-
-    REQUIRE_FALSE(set.contains(0));
-    REQUIRE_FALSE(set.contains(-5));
-    REQUIRE_FALSE(set.contains(-15));
-    REQUIRE_FALSE(set.contains(-25));
-
-    REQUIRE_FALSE(set.contains(-151));
-    REQUIRE_FALSE(set.contains(-199));
-    REQUIRE_FALSE(set.contains(-249));
-    REQUIRE_FALSE(set.contains(-299));
-    REQUIRE_FALSE(set.contains(-301));
+        Cycle::writeln("Test NumberValueSet: {}", Cycle::type_name<TestType>(), set.print_value_set());
+    }
 }
