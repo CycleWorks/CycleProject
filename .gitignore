@@ -64,3 +64,6 @@ CMakeSettings.json
 
 # Zed Editor
 .zed/
+
+# Others
+whiteboard/
