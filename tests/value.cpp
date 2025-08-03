@@ -1,9 +1,8 @@
 #include <catch2/catch.hpp>
-#include "Common/utils.hpp"
 #include "Common/write.hpp"
 #include "value.hpp"
 
-TEMPLATE_TEST_CASE("Signed NumberValueSet verification", "[NumberValueSet][signed]",
+TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
     int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double)
 {
     using ValueSetType = Cycle::NumberValueSet<TestType>;
@@ -22,17 +21,28 @@ TEMPLATE_TEST_CASE("Signed NumberValueSet verification", "[NumberValueSet][signe
         set.add_value(10 * sign);
         set.add_value(15 * sign);
         set.add_value(20 * sign);
+        set.add_value(25 * sign);
+
+        set.add_value(11 * sign);
+        set.add_value(12 * sign);
+        set.add_value(16 * sign);
+        set.add_value(17 * sign);
 
         REQUIRE(set.contains(5 * sign));
         REQUIRE(set.contains(10 * sign));
         REQUIRE(set.contains(15 * sign));
         REQUIRE(set.contains(20 * sign));
-        REQUIRE_FALSE(set.contains(4 * sign));
-        REQUIRE_FALSE(set.contains(6 * sign));
-        REQUIRE_FALSE(set.contains(7 * sign));
-        REQUIRE_FALSE(set.contains(8 * sign));
-        REQUIRE_FALSE(set.contains(9 * sign));
-        REQUIRE_FALSE(set.contains(11 * sign));
+        REQUIRE(set.contains(25 * sign));
+        REQUIRE(set.contains(11 * sign));
+        REQUIRE(set.contains(12 * sign));
+        REQUIRE(set.contains(16 * sign));
+        REQUIRE(set.contains(17 * sign));
+        REQUIRE_FALSE(set.contains(19 * sign));
+        REQUIRE_FALSE(set.contains(21 * sign));
+        REQUIRE_FALSE(set.contains(22 * sign));
+        REQUIRE_FALSE(set.contains(23 * sign));
+        REQUIRE_FALSE(set.contains(24 * sign));
+        REQUIRE_FALSE(set.contains(26 * sign));
 
         set.add_range(typename ValueSetType::Range(40 * sign, 120 * sign, 20 * sign));
         set.add_range(typename ValueSetType::Range(21 * sign, 70 * sign, 7 * sign));
@@ -60,6 +70,6 @@ TEMPLATE_TEST_CASE("Signed NumberValueSet verification", "[NumberValueSet][signe
         REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::min()));
         REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::max()));
 
-        Cycle::writeln("Test NumberValueSet: {}", Cycle::type_name<TestType>(), set.print_value_set());
+        Cycle::writeln("Test NumberValueSet: {}", set.print_value_set());
     }
 }
