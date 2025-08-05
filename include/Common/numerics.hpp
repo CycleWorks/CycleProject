@@ -71,7 +71,7 @@ namespace Cycle {
         T _number;
     };
 
-    // NumericWrapper helpers:
+    // Helpers:
 
     template <typename T, typename U, typename V>
     requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
@@ -84,20 +84,6 @@ namespace Cycle {
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
     long double _modulus(T a, U b);
-
-    // Other functions:
-
-    template <typename T>
-    requires IsNumeric<T>
-    NumericWrapper<T> absolute(NumericWrapper<T> num);
-
-    template <typename T>
-    requires IsNumeric<T>
-    bool addition_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
-
-    template <typename T>
-    requires IsNumeric<T>
-    bool subtraction_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
 }
 
 #include "numerics.tpp"

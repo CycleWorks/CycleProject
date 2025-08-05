@@ -99,7 +99,7 @@ namespace Cycle {
         return *this;
     }
 
-    // NumericWrapper helpers:
+    // Helpers:
 
     template <typename T, typename U, typename V>
     requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
@@ -139,37 +139,5 @@ namespace Cycle {
         } else {
             throw InternalError("Modulus function failed: unsupported type(s)");
         }
-    }
-
-    // Other functions:
-
-    template <typename T>
-    requires IsNumeric<T>
-    NumericWrapper<T> absolute(NumericWrapper<T> num){
-        if constexpr (IsSignedInteger<T>){
-            return (num < NumericWrapper<T>(0)) ? -num : num;
-        } else if constexpr (IsUnsignedInteger<T>){
-            return num;
-        } else if constexpr (IsFloat<T>){
-            return std::abs(num.value());
-        } else {
-            throw InternalError("Absolute function failed: unsupported type");
-        }
-    }
-
-    template <typename T>
-    requires IsNumeric<T>
-    bool addition_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b) {
-        if (b > NumericWrapper<T>(0) && a > NumericWrapper<T>::max() - b) return true;
-        if (b < NumericWrapper<T>(0) && a < NumericWrapper<T>::min() - b) return true;
-        return false;
-    }
-
-    template <typename T>
-    requires IsNumeric<T>
-    bool subtraction_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b) {
-        if (b > NumericWrapper<T>(0) && a < NumericWrapper<T>::min() + b) return true;
-        if (b < NumericWrapper<T>(0) && a > NumericWrapper<T>::max() + b) return true;
-        return false;
     }
 }
