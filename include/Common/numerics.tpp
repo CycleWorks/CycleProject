@@ -125,7 +125,7 @@ namespace Cycle {
     }
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
-    long double _modulus(T a, U b) {
+    long double _modulus(T a, U b){
         using CommonType = std::common_type_t<T, U>;
 
         if (_compare_numerics(CommonType(b), CommonType(0))){
