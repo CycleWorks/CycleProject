@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common/errors.hpp"
 #include "Common/numerics.hpp"
 
 namespace Cycle {
@@ -49,6 +50,23 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
+    NumericWrapper<T> standard_gcd(NumericWrapper<T> a, NumericWrapper<T> b){
+        a = absolute(a);
+        b = absolute(b);
+
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        while (b > NumericWrapper<T>::epsilon()){
+            NumericWrapper<T> temp = a % b;
+            a = b;
+            b = temp;
+        }
+        return a;
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
     ResultEGCD<T> extended_gcd(NumericWrapper<T> a, NumericWrapper<T> b){
         if (b == 0) return {a, 1, 0};
         auto result = extended_gcd(b, a % b);
@@ -63,5 +81,37 @@ namespace Cycle {
         NumericWrapper<T> x0 = result.x * (c / result.gcd);
         NumericWrapper<T> y0 = result.y * (c / result.gcd);
         return {x0, y0};
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
+    NumericWrapper<T> ceil_division(NumericWrapper<T> a, NumericWrapper<T> b){
+        NumericWrapper<T> div = a / b;
+        NumericWrapper<T> rem = a % b;
+
+        if (rem == NumericWrapper<T>(0)){
+            return div;
+        }
+        if ((a > NumericWrapper<T>(0) && b > NumericWrapper<T>(0)) || (a < NumericWrapper<T>(0) && b < NumericWrapper<T>(0))){
+            return div + NumericWrapper<T>(1);
+        } else {
+            return div;
+        }
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
+    NumericWrapper<T> floor_division(NumericWrapper<T> a, NumericWrapper<T> b){
+        NumericWrapper<T> div = a / b;
+        NumericWrapper<T> rem = a % b;
+
+        if (rem == NumericWrapper<T>(0)){
+            return div;
+        }
+        if ((a > NumericWrapper<T>(0) && b < NumericWrapper<T>(0)) || (a < NumericWrapper<T>(0) && b > NumericWrapper<T>(0))){
+            return div + NumericWrapper<T>(1);
+        } else {
+            return div;
+        }
     }
 }

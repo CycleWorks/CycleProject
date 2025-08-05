@@ -64,6 +64,25 @@ namespace Cycle {
     }
     template <typename T>
     requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator*(const NumericWrapper<U>& other) const {
+        using CommonType = std::common_type_t<T, U>;
+        return CommonType(_number) * CommonType(other.value());
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator/(const NumericWrapper<U>& other) const {
+        if (other.value() == 0){
+            throw InternalError("NumericWrapper<T> failed: division by zero");
+        }
+        using CommonType = std::common_type_t<T, U>;
+        return CommonType(_number) / CommonType(other.value());
+    }
+    template <typename T>
+    requires IsNumeric<T>
     NumericWrapper<T> NumericWrapper<T>::operator-() const {
         return -_number;
     }
@@ -72,6 +91,9 @@ namespace Cycle {
     template <typename U>
     requires IsNumeric<U>
     NumericWrapper<long double> NumericWrapper<T>::operator%(const NumericWrapper<U>& other) const {
+        if (other.value() == 0){
+            throw InternalError("NumericWrapper<T> failed: modulo by zero");
+        }
         return _modulus(_number, other.value());
     }
     template <typename T>

@@ -25,6 +25,7 @@ namespace Cycle {
 
         static NumericWrapper<T> min(){ return std::numeric_limits<T>::min(); }
         static NumericWrapper<T> max(){ return std::numeric_limits<T>::max(); }
+        static NumericWrapper<T> elipson(){ return std::numeric_limits<T>::epsilon(); }
 
         explicit operator T() const { return _number; }
         T value(){ return _number; }
@@ -52,6 +53,12 @@ namespace Cycle {
         template <typename U>
         requires IsNumeric<U>
         NumericWrapper<std::common_type_t<T, U>> operator-(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<std::common_type_t<T, U>> operator*(const NumericWrapper<U>& other) const;
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<std::common_type_t<T, U>> operator/(const NumericWrapper<U>& other) const;
 
         NumericWrapper<T> operator-() const;
         template <typename U>
