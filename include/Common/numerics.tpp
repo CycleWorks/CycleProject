@@ -125,17 +125,18 @@ namespace Cycle {
     }
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
-    long double _modulus(T a, U b){
+    long double _modulus(T a, U b) {
         using CommonType = std::common_type_t<T, U>;
 
-        if (_compare_numerics(CommonType(b), CommonType(0))){
+        if (_compare_numerics(CommonType(b), CommonType(0))) {
             throw InternalError("Modulus function failed: division by zero");
         }
-        if constexpr (IsInteger<T> && IsInteger<U>){
-            return (long double)(a % b);
+        if constexpr (IsInteger<T> && IsInteger<U>) {
+            CommonType aa = a, bb = b;
+            return (long double)(((aa % bb) + bb) % bb);
         }
-        else if constexpr (IsFloat<T> || IsFloat<U>){
-            return std::fmod(CommonType(a), CommonType(b));
+        else if constexpr (IsFloat<T> || IsFloat<U>) {
+            return std::fmod(static_cast<long double>(a), static_cast<long double>(b));
         } else {
             throw InternalError("Modulus function failed: unsupported type(s)");
         }
