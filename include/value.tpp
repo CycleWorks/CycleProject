@@ -2,13 +2,16 @@
 
 #include "Common/numerics.hpp"
 #include "Common/utils.hpp"
+#include "Common/write.hpp"
 #include "value.hpp"
 #include <algorithm>
 #include <complex>
 #include <format>
+#include <limits>
 #include <memory>
 #include <sstream>
 #include <cstdint>
+#include <unordered_set>
 
 namespace Cycle {
     // NumberValueSet<T>::Range:
@@ -19,7 +22,7 @@ namespace Cycle {
         if (_min > _max){
             std::swap(_min, _max);
         }
-        _step = absolute((T)_step);
+        _step = absolute(_step);
         _max -= (_max - _min) % _step;
     }
 
@@ -57,14 +60,18 @@ namespace Cycle {
         if (_step != other.get_step()) return false;
 
         // If previous step, append to eachother
-        if (_min - _step == other.get_max()){
-            _merge_with(other);
-            return true;
+        if (!subtraction_will_overflow(_min, _step)){
+            if (_min - _step == other.get_max()){
+                _merge_with(other);
+                return true;
+            }
         }
         // If next step, append to eachother
-        if (_max + _step == other.get_min()){
-            _merge_with(other);
-            return true;
+        if (!addition_will_overflow(_max, _step)){
+            if (_max + _step == other.get_min()){
+                _merge_with(other);
+                return true;
+            }
         }
         // If out of range
         if (_min > other.get_max() || _max < other.get_min()){
@@ -109,7 +116,42 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::contains(T value) const {
+    void NumberValueSet<T>::remove_value(NumericWrapper<T> value){
+        _possible_values.erase(value);
+
+        std::vector<Range> old_ranges = _possible_ranges;
+        _possible_ranges.clear();
+
+        for (const Range& range : old_ranges){
+            if (!range.contains(value)){
+                _merge_new_range(range);
+                continue;
+            }
+            if (range.get_min() == range.get_max()){
+                continue;
+            }
+            if (value == range.get_min()){
+                Range new_range(range.get_min() + range.get_step(), range.get_max(), range.get_step());
+                _merge_new_range(new_range);
+                continue;
+            }
+            if (value == range.get_max()){
+                Range new_range(range.get_min(), range.get_max() - range.get_step(), range.get_step());
+                _merge_new_range(new_range);
+                continue;
+            }
+            // Cut range in half
+            Range range_a(range.get_min(), value - range.get_step(), range.get_step());
+            Range range_b(value + range.get_step(), range.get_max(), range.get_step());
+
+            _merge_new_range(range_a);
+            _merge_new_range(range_b);
+        }
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
+    bool NumberValueSet<T>::contains(NumericWrapper<T> value) const {
         if (_possible_values.contains(value)) return true;
 
         for (const Range& possible_range : _possible_ranges){
@@ -181,39 +223,25 @@ namespace Cycle {
         for (T value : values_to_remove){
             _possible_values.erase(value);
         }
-        // Try to fit remaining values into new ranges
-        std::vector<NumericWrapper<T>> leftover(_possible_values.begin(), _possible_values.end());
-        std::vector<NumericWrapper<T>> still_unmerged;
-
-        for (const NumericWrapper<T>& value : leftover){
-            bool merged = false;
-            for (Range& range : _possible_ranges){
-                Range new_range(value, value, range.get_step());
-                if (range.try_merge_with(new_range)){
-                    merged = true;
-                    break;
-                }
-            }
-            if (merged){
-                _possible_values.erase(value);
-            }
-        }
     }
 
     template <typename T>
     requires IsNumeric<T>
     void NumberValueSet<T>::_merge_new_range(const Range& new_range){
-        std::vector<Range> merged_ranges;
-        Range to_merge = new_range;
-
-        auto it = _possible_ranges.begin();
-        while (it != _possible_ranges.end()){
-            if (to_merge.try_merge_with(*it)){
-                it = _possible_ranges.erase(it); // remove and continue merging
-                continue;
-            }
-            it++;
+        for (Range& range : _possible_ranges){
+            if (range.try_merge_with(new_range)) return;
         }
-        _possible_ranges.push_back(to_merge);
+        // If only one value
+        if (new_range.get_min() == new_range.get_max()){
+            _possible_values.insert(new_range.get_min());
+            return;
+        }
+        // If only two value
+        if (new_range.get_min() + new_range.get_step() == new_range.get_max()){
+            _possible_values.insert(new_range.get_min());
+            _possible_values.insert(new_range.get_max());
+            return;
+        }
+        _possible_ranges.push_back(new_range);
     }
 }

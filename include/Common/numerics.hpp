@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <type_traits>
 #include <format>
 
@@ -22,8 +23,12 @@ namespace Cycle {
         NumericWrapper(const NumericWrapper<T>&) = default;
         NumericWrapper(T number): _number(number){}
 
+        static NumericWrapper<T> min(){ return std::numeric_limits<T>::min(); }
+        static NumericWrapper<T> max(){ return std::numeric_limits<T>::max(); }
+
         explicit operator T() const { return _number; }
-        T value() const { return _number; }
+        T value(){ return _number; }
+        const T value() const { return _number; }
 
         template <typename U>
         requires IsNumeric<U>
@@ -47,6 +52,8 @@ namespace Cycle {
         template <typename U>
         requires IsNumeric<U>
         NumericWrapper<std::common_type_t<T, U>> operator-(const NumericWrapper<U>& other) const;
+
+        NumericWrapper<T> operator-() const;
         template <typename U>
         requires IsNumeric<U>
         NumericWrapper<long double> operator%(const NumericWrapper<U>& other) const;
@@ -64,21 +71,33 @@ namespace Cycle {
         T _number;
     };
 
+    // NumericWrapper helpers:
+
     template <typename T, typename U, typename V>
     requires IsFloat<T> && IsFloat<U> && std::convertible_to<V, std::common_type_t<T, U>>
-    bool compare_floats(T a, U b, V epsilon);
+    bool _compare_floats(T a, U b, V epsilon);
 
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
-    bool compare_numerics(T a, U b);
+    bool _compare_numerics(T a, U b);
 
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
-    long double modulus(T a, U b);
+    long double _modulus(T a, U b);
+
+    // Other functions:
 
     template <typename T>
     requires IsNumeric<T>
-    T absolute(T num);
+    NumericWrapper<T> absolute(NumericWrapper<T> num);
+
+    template <typename T>
+    requires IsNumeric<T>
+    bool addition_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
+
+    template <typename T>
+    requires IsNumeric<T>
+    bool subtraction_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
 }
 
 #include "numerics.tpp"

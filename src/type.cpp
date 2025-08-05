@@ -74,16 +74,16 @@ std::unique_ptr<ValueSet> NumericType::create_default_value_set() const {
 
     if (!initialized){
         // Add range that covers every possible value
-        single_i8.add_range(NumberValueSet<int8_t>::Range(std::numeric_limits<int8_t>::min(), std::numeric_limits<int8_t>::max(), 1));
-        single_i16.add_range(NumberValueSet<int16_t>::Range(std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), 1));
-        single_i32.add_range(NumberValueSet<int32_t>::Range(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max(), 1));
-        single_i64.add_range(NumberValueSet<int64_t>::Range(std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max(), 1));
-        single_u8.add_range(NumberValueSet<uint8_t>::Range(std::numeric_limits<uint8_t>::min(), std::numeric_limits<uint8_t>::max(), 1));
-        single_u16.add_range(NumberValueSet<uint16_t>::Range(std::numeric_limits<uint16_t>::min(), std::numeric_limits<uint16_t>::max(), 1));
-        single_u32.add_range(NumberValueSet<uint32_t>::Range(std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max(), 1));
-        single_u64.add_range(NumberValueSet<uint64_t>::Range(std::numeric_limits<uint64_t>::min(), std::numeric_limits<uint64_t>::max(), 1));
-        single_float.add_range(NumberValueSet<float>::Range(std::numeric_limits<float>::min(), std::numeric_limits<float>::max(), 1));
-        single_double.add_range(NumberValueSet<double>::Range(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), 1));
+        single_i8.add_range(NumberValueSet<int8_t>::Range(NumericWrapper<int8_t>::min(), NumericWrapper<int8_t>::max(), 1));
+        single_i16.add_range(NumberValueSet<int16_t>::Range(NumericWrapper<int16_t>::min(), NumericWrapper<int16_t>::max(), 1));
+        single_i32.add_range(NumberValueSet<int32_t>::Range(NumericWrapper<int32_t>::min(), NumericWrapper<int32_t>::max(), 1));
+        single_i64.add_range(NumberValueSet<int64_t>::Range(NumericWrapper<int64_t>::min(), NumericWrapper<int64_t>::max(), 1));
+        single_u8.add_range(NumberValueSet<uint8_t>::Range(NumericWrapper<uint8_t>::min(), NumericWrapper<uint8_t>::max(), 1));
+        single_u16.add_range(NumberValueSet<uint16_t>::Range(NumericWrapper<uint16_t>::min(), NumericWrapper<uint16_t>::max(), 1));
+        single_u32.add_range(NumberValueSet<uint32_t>::Range(NumericWrapper<uint32_t>::min(), NumericWrapper<uint32_t>::max(), 1));
+        single_u64.add_range(NumberValueSet<uint64_t>::Range(NumericWrapper<uint64_t>::min(), NumericWrapper<uint64_t>::max(), 1));
+        single_float.add_range(NumberValueSet<float>::Range(NumericWrapper<float>::min(), NumericWrapper<float>::max(), 1));
+        single_double.add_range(NumberValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), 1));
         initialized = true;
     }
 

@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <set>
 #include <type_traits>
+#include <unordered_set>
 
 namespace Cycle {
     struct ValueSet {
@@ -24,7 +25,6 @@ namespace Cycle {
         std::vector<std::unique_ptr<ValueSet>> _ordered_value_sets;
     };
 
-    // TODO Add range deletion
     template <typename T>
     requires IsNumeric<T>
     struct NumberValueSet : public ValueSet {
@@ -47,7 +47,8 @@ namespace Cycle {
         };
         void add_value(NumericWrapper<T> value);
         void add_range(const Range& value);
-        bool contains(T value) const;
+        void remove_value(NumericWrapper<T> value);
+        bool contains(NumericWrapper<T> value) const;
         virtual std::string print_value_set(uint indentation = 0) const override;
     private:
         void _promote_values_to_range();

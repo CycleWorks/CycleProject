@@ -67,8 +67,8 @@ TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
         REQUIRE_FALSE(set.contains(121 * sign));
 
         REQUIRE_FALSE(set.contains(0));
-        REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::min()));
-        REQUIRE_FALSE(set.contains(std::numeric_limits<TestType>::max()));
+        REQUIRE_FALSE(set.contains(Cycle::NumericWrapper<TestType>::min()));
+        REQUIRE_FALSE(set.contains(Cycle::NumericWrapper<TestType>::max()));
 
         Cycle::writeln("Test NumberValueSet: {}", set.print_value_set());
     }
