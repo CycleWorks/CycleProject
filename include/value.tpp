@@ -106,11 +106,12 @@ namespace Cycle {
     template <typename T>
     requires IsNumeric<T>
     NumberValueSet<T>& NumberValueSet<T>::add_value(NumericWrapper<T> value){
+        _possible_values.insert(value);
+
         for (Range& range : _possible_ranges){
             Range new_range(value, value, range.get_step());
             if (range.try_merge_with(new_range)) return *this;
         }
-        _possible_values.insert(value);
         _promote_values_to_range();
         _initialized = true;
         return *this;
