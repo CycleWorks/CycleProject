@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Common/errors.hpp"
 #include "Common/numerics.hpp"
+#include "Common/math.hpp"
 #include "Common/utils.hpp"
 #include "Common/write.hpp"
 #include "value.hpp"
@@ -9,9 +11,12 @@
 #include <format>
 #include <limits>
 #include <memory>
+#include <numeric>
 #include <sstream>
 #include <cstdint>
+#include <type_traits>
 #include <unordered_set>
+#include <vector>
 
 namespace Cycle {
     // NumberValueSet<T>::Range:
@@ -19,9 +24,10 @@ namespace Cycle {
     template <typename T>
     requires IsNumeric<T>
     NumberValueSet<T>::Range::Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step): _min(min), _max(max), _step(step){
-        if (_min > _max){
-            std::swap(_min, _max);
+        if (_step == NumericWrapper<T>(0)){
+            throw InternalError("NumberValueSet<T> failed: step cannot be 0");
         }
+        if (_min > _max) std::swap(_min, _max);
         _step = absolute(_step);
         _max -= (_max - _min) % _step;
     }
@@ -119,10 +125,10 @@ namespace Cycle {
     void NumberValueSet<T>::remove_value(NumericWrapper<T> value){
         _possible_values.erase(value);
 
-        std::vector<Range> old_ranges = _possible_ranges;
+        std::vector<Range> previous_ranges = _possible_ranges;
         _possible_ranges.clear();
 
-        for (const Range& range : old_ranges){
+        for (const Range& range : previous_ranges){
             if (!range.contains(value)){
                 _merge_new_range(range);
                 continue;
@@ -151,6 +157,66 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
+    void NumberValueSet<T>::remove_values_over(NumericWrapper<T> value){
+        std::set<NumericWrapper<T>> new_possible_value;
+
+        for (const NumericWrapper<T>& possible_value : _possible_values){
+            if (possible_value <= value) new_possible_value.insert(value);
+        }
+        _possible_values = std::move(new_possible_value);
+
+        std::vector<Range> previous_ranges = _possible_ranges;
+        _possible_ranges.clear();
+
+        for (const Range& range : previous_ranges){
+            if (value >= range.get_max()){
+                _merge_new_range(range);
+                continue;
+            }
+            if (value < range.get_min()){
+                continue;
+            }
+            NumericWrapper<T> steps = (T)floor_division(value - range.get_min(), range.get_step()).value();
+            NumericWrapper<T> max_value = range.get_min() + steps * range.get_step();
+            if (max_value >= range.get_min()){
+                Range new_range(range.get_min(), NumericWrapper<T>(max_value.value()), range.get_step());
+                _merge_new_range(new_range);
+            }
+        }
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
+    void NumberValueSet<T>::remove_values_under(NumericWrapper<T> value){
+        std::set<NumericWrapper<T>> new_possible_value;
+
+        for (const NumericWrapper<T>& possible_value : _possible_values){
+            if (possible_value >= value) new_possible_value.insert(value);
+        }
+        _possible_values = std::move(new_possible_value);
+
+        std::vector<Range> previous_ranges = _possible_ranges;
+        _possible_ranges.clear();
+
+        for (const Range& range : previous_ranges){
+            if (value <= range.get_min()){
+                _merge_new_range(range);
+                continue;
+            }
+            if (value > range.get_max()){
+                continue;
+            }
+            NumericWrapper<T> steps = (T)ceil_division(value - range.get_min(), range.get_step()).value();
+            NumericWrapper<T> min_value = range.get_min() + steps * range.get_step();
+            if (min_value <= range.get_max()){
+                Range new_range(min_value, range.get_max(), range.get_step());
+                _merge_new_range(new_range);
+            }
+        }
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
     bool NumberValueSet<T>::contains(NumericWrapper<T> value) const {
         if (_possible_values.contains(value)) return true;
 
@@ -162,12 +228,24 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
+    bool NumberValueSet<T>::has_single_possibility() const {
+        if (!_possible_values.empty()) return false;
+        if (!_possible_ranges.empty()) return false;
+        return true;
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
     std::string NumberValueSet<T>::print_value_set(uint indentation) const {
         std::ostringstream oss;
         for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
         oss << "{";
         for (auto it = _possible_values.begin(); it != _possible_values.end(); it++){
-            oss << (T)*it;
+            if constexpr (sizeof(T) == 1){
+                oss << (int)(T)*it;
+            } else {
+                oss << (T)*it;
+            }
             if (std::next(it) != _possible_values.end()){
                 oss << ", ";
             }

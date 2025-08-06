@@ -1,3 +1,4 @@
+#include "Common/numerics.hpp"
 #include "Common/write.hpp"
 #include "Common/errors.hpp"
 #include "type.hpp"
@@ -20,7 +21,7 @@ int main(int argc, char** argv){
         ValueSet* value_set_0 = ((StructValueSet*)struct_value_set.get())->get_value_at_index(0);
         NumberValueSet<int32_t>* number_value_set_0 = (NumberValueSet<int32_t>*)value_set_0;
 
-        number_value_set_0->remove_value(40);
+        number_value_set_0->remove_values_under(-40);
 
         writeln("Struct contents: {}", struct_value_set->print_value_set());
     }

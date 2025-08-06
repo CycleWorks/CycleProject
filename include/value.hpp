@@ -48,7 +48,10 @@ namespace Cycle {
         void add_value(NumericWrapper<T> value);
         void add_range(const Range& value);
         void remove_value(NumericWrapper<T> value);
+        void remove_values_over(NumericWrapper<T> value);
+        void remove_values_under(NumericWrapper<T> value);
         bool contains(NumericWrapper<T> value) const;
+        bool has_single_possibility() const;
         virtual std::string print_value_set(uint indentation = 0) const override;
     private:
         void _promote_values_to_range();

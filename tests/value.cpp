@@ -3,7 +3,7 @@
 #include "value.hpp"
 
 TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
-    int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double)
+    int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double)
 {
     using ValueSetType = Cycle::NumberValueSet<TestType>;
     std::vector<TestType> test_signs;
