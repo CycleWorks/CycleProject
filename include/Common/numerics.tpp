@@ -74,12 +74,11 @@ namespace Cycle {
     requires IsNumeric<T>
     template <typename U>
     requires IsNumeric<U>
-    NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator/(const NumericWrapper<U>& other) const {
+    NumericWrapper<long double> NumericWrapper<T>::operator/(const NumericWrapper<U>& other) const {
         if (other.value() == 0){
             throw InternalError("NumericWrapper<T> failed: division by zero");
         }
-        using CommonType = std::common_type_t<T, U>;
-        return CommonType(_number) / CommonType(other.value());
+        return (long double)_number / (long double)other.value();
     }
     template <typename T>
     requires IsNumeric<T>

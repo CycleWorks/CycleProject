@@ -58,7 +58,7 @@ namespace Cycle {
         NumericWrapper<std::common_type_t<T, U>> operator*(const NumericWrapper<U>& other) const;
         template <typename U>
         requires IsNumeric<U>
-        NumericWrapper<std::common_type_t<T, U>> operator/(const NumericWrapper<U>& other) const;
+        NumericWrapper<long double> operator/(const NumericWrapper<U>& other) const;
 
         NumericWrapper<T> operator-() const;
         template <typename U>
