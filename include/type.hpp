@@ -8,10 +8,12 @@
 #include <unordered_map>
 
 namespace Cycle {
-    struct ValueSet;
+    struct ValueSetAndType;
 
     struct Type {
-        virtual std::unique_ptr<ValueSet> create_default_value_set() const = 0;
+        virtual std::unique_ptr<ValueSetAndType> create_uninitialized_value() const = 0;
+        virtual std::unique_ptr<ValueSetAndType> create_default_value() const = 0;
+        virtual std::unique_ptr<ValueSetAndType> create_worst_value() const = 0;
     };
     
     struct NumericType : public Type {
@@ -28,7 +30,9 @@ namespace Cycle {
         static const NumericType* get_float();
         static const NumericType* get_double();
 
-        std::unique_ptr<ValueSet> create_default_value_set() const override;
+        std::unique_ptr<ValueSetAndType> create_uninitialized_value() const override;
+        std::unique_ptr<ValueSetAndType> create_default_value() const override;
+        std::unique_ptr<ValueSetAndType> create_worst_value() const override;
     private:
         NumericType(NumericType::Kind kind);
         NumericType::Kind _kind;
@@ -38,7 +42,9 @@ namespace Cycle {
         static const UnnamedStructType* get_struct(const std::vector<const Type*>& ordered_field_types);
         std::span<const Type* const> get_ordered_field_types() const;
 
-        std::unique_ptr<ValueSet> create_default_value_set() const override;
+        std::unique_ptr<ValueSetAndType> create_uninitialized_value() const override;
+        std::unique_ptr<ValueSetAndType> create_default_value() const override;
+        std::unique_ptr<ValueSetAndType> create_worst_value() const override;
     private:
         UnnamedStructType(const std::vector<const Type*>& ordered_field_types);
         std::vector<const Type*> _ordered_field_types;

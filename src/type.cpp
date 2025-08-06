@@ -59,7 +59,55 @@ const NumericType* NumericType::get_double(){
     return &singleton;
 }
 
-std::unique_ptr<ValueSet> NumericType::create_default_value_set() const {
+std::unique_ptr<ValueSetAndType> NumericType::create_uninitialized_value() const {
+    static NumberValueSet<int8_t> single_i8;
+    static NumberValueSet<int16_t> single_i16;
+    static NumberValueSet<int32_t> single_i32;
+    static NumberValueSet<int64_t> single_i64;
+    static NumberValueSet<uint8_t> single_u8;
+    static NumberValueSet<uint16_t> single_u16;
+    static NumberValueSet<uint32_t> single_u32;
+    static NumberValueSet<uint64_t> single_u64;
+    static NumberValueSet<float> single_float;
+    static NumberValueSet<double> single_double;
+
+    std::unique_ptr<ValueSet> value_set;
+    switch (_kind){
+    case NumericType::Kind::INT8:
+        value_set = NumberValueSetFactory<int8_t>::make_unique(new NumberValueSet<int8_t>(single_i8));
+        break;
+    case NumericType::Kind::INT16:
+        value_set = NumberValueSetFactory<int16_t>::make_unique(new NumberValueSet<int16_t>(single_i16));
+        break;
+    case NumericType::Kind::INT32:
+        value_set = NumberValueSetFactory<int32_t>::make_unique(new NumberValueSet<int32_t>(single_i32));
+        break;
+    case NumericType::Kind::INT64:
+        value_set = NumberValueSetFactory<int64_t>::make_unique(new NumberValueSet<int64_t>(single_i64));
+        break;
+    case NumericType::Kind::UINT8:
+        value_set = NumberValueSetFactory<uint8_t>::make_unique(new NumberValueSet<uint8_t>(single_u8));
+        break;
+    case NumericType::Kind::UINT16:
+        value_set = NumberValueSetFactory<uint16_t>::make_unique(new NumberValueSet<uint16_t>(single_u16));
+        break;
+    case NumericType::Kind::UINT32:
+        value_set = NumberValueSetFactory<uint32_t>::make_unique(new NumberValueSet<uint32_t>(single_u32));
+        break;
+    case NumericType::Kind::UINT64:
+        value_set = NumberValueSetFactory<uint64_t>::make_unique(new NumberValueSet<uint64_t>(single_u64));
+        break;
+    case NumericType::Kind::FLOAT:
+        value_set = NumberValueSetFactory<float>::make_unique(new NumberValueSet<float>(single_float));
+        break;
+    case NumericType::Kind::DOUBLE:
+        value_set = NumberValueSetFactory<double>::make_unique(new NumberValueSet<double>(single_double));
+        break;
+    }
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
+}
+
+std::unique_ptr<ValueSetAndType> NumericType::create_default_value() const {
     static NumberValueSet<int8_t> single_i8;
     static NumberValueSet<int16_t> single_i16;
     static NumberValueSet<int32_t> single_i32;
@@ -73,7 +121,68 @@ std::unique_ptr<ValueSet> NumericType::create_default_value_set() const {
     static bool initialized = false;
 
     if (!initialized){
-        // Add range that covers every possible value
+        single_i8.add_value(0);
+        single_i16.add_value(0);
+        single_i32.add_value(0);
+        single_i64.add_value(0);
+        single_u8.add_value(0);
+        single_u16.add_value(0);
+        single_u32.add_value(0);
+        single_u64.add_value(0);
+        single_float.add_value(0);
+        single_double.add_value(0);
+        initialized = true;
+    }
+    std::unique_ptr<ValueSet> value_set;
+    switch (_kind){
+    case NumericType::Kind::INT8:
+        value_set = NumberValueSetFactory<int8_t>::make_unique(new NumberValueSet<int8_t>(single_i8));
+        break;
+    case NumericType::Kind::INT16:
+        value_set = NumberValueSetFactory<int16_t>::make_unique(new NumberValueSet<int16_t>(single_i16));
+        break;
+    case NumericType::Kind::INT32:
+        value_set = NumberValueSetFactory<int32_t>::make_unique(new NumberValueSet<int32_t>(single_i32));
+        break;
+    case NumericType::Kind::INT64:
+        value_set = NumberValueSetFactory<int64_t>::make_unique(new NumberValueSet<int64_t>(single_i64));
+        break;
+    case NumericType::Kind::UINT8:
+        value_set = NumberValueSetFactory<uint8_t>::make_unique(new NumberValueSet<uint8_t>(single_u8));
+        break;
+    case NumericType::Kind::UINT16:
+        value_set = NumberValueSetFactory<uint16_t>::make_unique(new NumberValueSet<uint16_t>(single_u16));
+        break;
+    case NumericType::Kind::UINT32:
+        value_set = NumberValueSetFactory<uint32_t>::make_unique(new NumberValueSet<uint32_t>(single_u32));
+        break;
+    case NumericType::Kind::UINT64:
+        value_set = NumberValueSetFactory<uint64_t>::make_unique(new NumberValueSet<uint64_t>(single_u64));
+        break;
+    case NumericType::Kind::FLOAT:
+        value_set = NumberValueSetFactory<float>::make_unique(new NumberValueSet<float>(single_float));
+        break;
+    case NumericType::Kind::DOUBLE:
+        value_set = NumberValueSetFactory<double>::make_unique(new NumberValueSet<double>(single_double));
+        break;
+    }
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
+}
+
+std::unique_ptr<ValueSetAndType> NumericType::create_worst_value() const {
+    static NumberValueSet<int8_t> single_i8;
+    static NumberValueSet<int16_t> single_i16;
+    static NumberValueSet<int32_t> single_i32;
+    static NumberValueSet<int64_t> single_i64;
+    static NumberValueSet<uint8_t> single_u8;
+    static NumberValueSet<uint16_t> single_u16;
+    static NumberValueSet<uint32_t> single_u32;
+    static NumberValueSet<uint64_t> single_u64;
+    static NumberValueSet<float> single_float;
+    static NumberValueSet<double> single_double;
+    static bool initialized = false;
+
+    if (!initialized){
         single_i8.add_range(NumberValueSet<int8_t>::Range(NumericWrapper<int8_t>::min(), NumericWrapper<int8_t>::max(), 1));
         single_i16.add_range(NumberValueSet<int16_t>::Range(NumericWrapper<int16_t>::min(), NumericWrapper<int16_t>::max(), 1));
         single_i32.add_range(NumberValueSet<int32_t>::Range(NumericWrapper<int32_t>::min(), NumericWrapper<int32_t>::max(), 1));
@@ -86,30 +195,40 @@ std::unique_ptr<ValueSet> NumericType::create_default_value_set() const {
         single_double.add_range(NumberValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), 1));
         initialized = true;
     }
-
-    // Create copy
+    std::unique_ptr<ValueSet> value_set;
     switch (_kind){
     case NumericType::Kind::INT8:
-        return NumberValueSetFactory<int8_t>::make_unique(new NumberValueSet<int8_t>(single_i8));
+        value_set = NumberValueSetFactory<int8_t>::make_unique(new NumberValueSet<int8_t>(single_i8));
+        break;
     case NumericType::Kind::INT16:
-        return NumberValueSetFactory<int16_t>::make_unique(new NumberValueSet<int16_t>(single_i16));
+        value_set = NumberValueSetFactory<int16_t>::make_unique(new NumberValueSet<int16_t>(single_i16));
+        break;
     case NumericType::Kind::INT32:
-        return NumberValueSetFactory<int32_t>::make_unique(new NumberValueSet<int32_t>(single_i32));
+        value_set = NumberValueSetFactory<int32_t>::make_unique(new NumberValueSet<int32_t>(single_i32));
+        break;
     case NumericType::Kind::INT64:
-        return NumberValueSetFactory<int64_t>::make_unique(new NumberValueSet<int64_t>(single_i64));
+        value_set = NumberValueSetFactory<int64_t>::make_unique(new NumberValueSet<int64_t>(single_i64));
+        break;
     case NumericType::Kind::UINT8:
-        return NumberValueSetFactory<uint8_t>::make_unique(new NumberValueSet<uint8_t>(single_u8));
+        value_set = NumberValueSetFactory<uint8_t>::make_unique(new NumberValueSet<uint8_t>(single_u8));
+        break;
     case NumericType::Kind::UINT16:
-        return NumberValueSetFactory<uint16_t>::make_unique(new NumberValueSet<uint16_t>(single_u16));
+        value_set = NumberValueSetFactory<uint16_t>::make_unique(new NumberValueSet<uint16_t>(single_u16));
+        break;
     case NumericType::Kind::UINT32:
-        return NumberValueSetFactory<uint32_t>::make_unique(new NumberValueSet<uint32_t>(single_u32));
+        value_set = NumberValueSetFactory<uint32_t>::make_unique(new NumberValueSet<uint32_t>(single_u32));
+        break;
     case NumericType::Kind::UINT64:
-        return NumberValueSetFactory<uint64_t>::make_unique(new NumberValueSet<uint64_t>(single_u64));
+        value_set = NumberValueSetFactory<uint64_t>::make_unique(new NumberValueSet<uint64_t>(single_u64));
+        break;
     case NumericType::Kind::FLOAT:
-        return NumberValueSetFactory<float>::make_unique(new NumberValueSet<float>(single_float));
+        value_set = NumberValueSetFactory<float>::make_unique(new NumberValueSet<float>(single_float));
+        break;
     case NumericType::Kind::DOUBLE:
-        return NumberValueSetFactory<double>::make_unique(new NumberValueSet<double>(single_double));
+        value_set = NumberValueSetFactory<double>::make_unique(new NumberValueSet<double>(single_double));
+        break;
     }
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
 }
 
 NumericType::NumericType(NumericType::Kind kind):
@@ -148,12 +267,31 @@ std::span<const Type* const> UnnamedStructType::get_ordered_field_types() const 
     return std::span<const Type* const>(_ordered_field_types.data(), _ordered_field_types.size());;
 }
 
-std::unique_ptr<ValueSet> UnnamedStructType::create_default_value_set() const {
-    std::vector<std::unique_ptr<ValueSet>> ordered_types;
+std::unique_ptr<ValueSetAndType> UnnamedStructType::create_uninitialized_value() const {
+    std::vector<std::unique_ptr<ValueSetAndType>> ordered_types;
     for (const Type* const field : _ordered_field_types){
-        ordered_types.push_back(field->create_default_value_set());
+        ordered_types.push_back(field->create_uninitialized_value());
     }
-    return StructValueSetFactory::make_unique(new StructValueSet(std::move(ordered_types)));
+    std::unique_ptr<ValueSet> value_set = StructValueSetFactory::make_unique(new StructValueSet(std::move(ordered_types)));
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
+}
+
+std::unique_ptr<ValueSetAndType> UnnamedStructType::create_default_value() const {
+    std::vector<std::unique_ptr<ValueSetAndType>> ordered_types;
+    for (const Type* const field : _ordered_field_types){
+        ordered_types.push_back(field->create_default_value());
+    }
+    std::unique_ptr<ValueSet> value_set = StructValueSetFactory::make_unique(new StructValueSet(std::move(ordered_types)));
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
+}
+
+std::unique_ptr<ValueSetAndType> UnnamedStructType::create_worst_value() const {
+    std::vector<std::unique_ptr<ValueSetAndType>> ordered_types;
+    for (const Type* const field : _ordered_field_types){
+        ordered_types.push_back(field->create_worst_value());
+    }
+    std::unique_ptr<ValueSet> value_set = StructValueSetFactory::make_unique(new StructValueSet(std::move(ordered_types)));
+    return ValueSetAndTypeFactory::make_unique(new ValueSetAndType(this, std::move(value_set)));
 }
 
 UnnamedStructType::UnnamedStructType(const std::vector<const Type*>& ordered_field_types):

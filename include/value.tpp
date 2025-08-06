@@ -105,24 +105,28 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::add_value(NumericWrapper<T> value){
+    NumberValueSet<T>& NumberValueSet<T>::add_value(NumericWrapper<T> value){
         for (Range& range : _possible_ranges){
             Range new_range(value, value, range.get_step());
-            if (range.try_merge_with(new_range)) return;
+            if (range.try_merge_with(new_range)) return *this;
         }
         _possible_values.insert(value);
         _promote_values_to_range();
+        _initialized = true;
+        return *this;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::add_range(const Range& value){
+    NumberValueSet<T>& NumberValueSet<T>::add_range(const Range& value){
         _merge_new_range(value);
+        _initialized = true;
+        return *this;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::remove_value(NumericWrapper<T> value){
+    NumberValueSet<T>& NumberValueSet<T>::remove_value(NumericWrapper<T> value){
         _possible_values.erase(value);
 
         std::vector<Range> previous_ranges = _possible_ranges;
@@ -153,15 +157,16 @@ namespace Cycle {
             _merge_new_range(range_a);
             _merge_new_range(range_b);
         }
+        return *this;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::remove_values_over(NumericWrapper<T> value){
+    NumberValueSet<T>& NumberValueSet<T>::remove_values_over(NumericWrapper<T> value){
         std::set<NumericWrapper<T>> new_possible_value;
 
         for (const NumericWrapper<T>& possible_value : _possible_values){
-            if (possible_value <= value) new_possible_value.insert(value);
+            if (possible_value <= value) new_possible_value.insert(possible_value);
         }
         _possible_values = std::move(new_possible_value);
 
@@ -183,15 +188,16 @@ namespace Cycle {
                 _merge_new_range(new_range);
             }
         }
+        return *this;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::remove_values_under(NumericWrapper<T> value){
+    NumberValueSet<T>& NumberValueSet<T>::remove_values_under(NumericWrapper<T> value){
         std::set<NumericWrapper<T>> new_possible_value;
 
         for (const NumericWrapper<T>& possible_value : _possible_values){
-            if (possible_value >= value) new_possible_value.insert(value);
+            if (possible_value >= value) new_possible_value.insert(possible_value);
         }
         _possible_values = std::move(new_possible_value);
 
@@ -213,6 +219,7 @@ namespace Cycle {
                 _merge_new_range(new_range);
             }
         }
+        return *this;
     }
 
     template <typename T>
@@ -228,10 +235,14 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
+    bool NumberValueSet<T>::is_initialized() const {
+        return _initialized;
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
     bool NumberValueSet<T>::has_single_possibility() const {
-        if (!_possible_values.empty()) return false;
-        if (!_possible_ranges.empty()) return false;
-        return true;
+        return _possible_values.size() + _possible_ranges.size() == 1;
     }
 
     template <typename T>
