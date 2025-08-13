@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Cycle::Symbols {
+namespace Cycle::HIR::Symbols {
     struct Symbol {
         explicit Symbol(const std::string& symbol_name);
         std::string_view get_symbol_name() const;

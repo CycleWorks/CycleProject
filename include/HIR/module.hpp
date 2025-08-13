@@ -4,7 +4,7 @@
 // #include "Common/utils.hpp"
 // #include <memory>
 
-// namespace Cycle {
+// namespace Cycle::HIR {
 //     struct Module {
 //         Module();
 

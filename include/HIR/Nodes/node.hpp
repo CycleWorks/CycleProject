@@ -2,7 +2,7 @@
 
 #include "Common/utils.hpp"
 
-namespace Cycle::Nodes {
+namespace Cycle::HIR::Nodes {
     struct BaseNode : public AbstractClass {
     };
 }

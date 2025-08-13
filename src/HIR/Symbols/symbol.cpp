@@ -1,6 +1,6 @@
-#include "Symbols/symbol.hpp"
+#include "HIR/Symbols/symbol.hpp"
 
-using namespace Cycle::Symbols;
+using namespace Cycle::HIR::Symbols;
 
 Symbol::Symbol(const std::string& symbol_name):
     _symbol_name(symbol_name)

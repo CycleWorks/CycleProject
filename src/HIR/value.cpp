@@ -1,8 +1,8 @@
-#include "value.hpp"
+#include "HIR/value.hpp"
 #include "Common/utils.hpp"
 #include <sstream>
 
-using namespace Cycle;
+using namespace Cycle::HIR;
 
 // StructValueSet:
 

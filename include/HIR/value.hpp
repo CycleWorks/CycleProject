@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <unordered_set>
 
-namespace Cycle {
+namespace Cycle::HIR {
     struct ValueSet {
         virtual std::string print_value_set(uint indentation = 0) const = 0;
         virtual ~ValueSet(){}
@@ -30,8 +30,8 @@ namespace Cycle {
     requires IsNumeric<T>
     struct NumberValueSet : public ValueSet {
         struct Range {
-            Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step);
-            Range(const Range&) = default;
+            explicit Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step);
+            explicit Range(const Range&) = default;
 
             void set_min(NumericWrapper<T> min);
             void set_max(NumericWrapper<T> max);
@@ -49,8 +49,8 @@ namespace Cycle {
             NumericWrapper<T> _step;
         };
     public:
-        NumberValueSet() = default;
-        NumberValueSet(const NumberValueSet&) = default;
+        explicit NumberValueSet() = default;
+        explicit NumberValueSet(const NumberValueSet&) = default;
 
         NumberValueSet& add_value(NumericWrapper<T> value);
         NumberValueSet& add_range(const Range& value);

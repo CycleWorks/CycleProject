@@ -1,5 +1,5 @@
-// #include "module.hpp"
-// #include "Nodes/scope.hpp"
+// #include "HIR/module.hpp"
+// #include "HIR/Nodes/scope.hpp"
 
 // using namespace Cycle;
 

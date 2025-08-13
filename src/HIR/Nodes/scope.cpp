@@ -1,4 +1,4 @@
-// #include "Nodes/scope.hpp"
+// #include "HIR/Nodes/scope.hpp"
 // #include "Common/errors.hpp"
 // #include <optional>
 

@@ -1,11 +1,11 @@
-#include "type.hpp"
-#include "value.hpp"
+#include "HIR/type.hpp"
+#include "HIR/value.hpp"
 #include <limits>
 #include <memory>
 #include <stdint.h>
 #include <vector>
 
-using namespace Cycle;
+using namespace Cycle::HIR;
 
 // NumericType:
 

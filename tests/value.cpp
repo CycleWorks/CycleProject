@@ -1,11 +1,11 @@
 #include <catch2/catch.hpp>
 #include "Common/write.hpp"
-#include "value.hpp"
+#include "HIR/value.hpp"
 
 TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
     int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double)
 {
-    using ValueSetType = Cycle::NumberValueSet<TestType>;
+    using ValueSetType = Cycle::HIR::NumberValueSet<TestType>;
     std::vector<TestType> test_signs;
 
     if constexpr (Cycle::IsUnsignedInteger<TestType>){

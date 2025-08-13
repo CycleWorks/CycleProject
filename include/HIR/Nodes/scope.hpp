@@ -9,7 +9,7 @@
 // #include <unordered_map>
 // #include <vector>
 
-// namespace Cycle::Nodes {
+// namespace Cycle::HIR::Nodes {
 //     struct BaseScope;
 
 //     // Scope contexts:

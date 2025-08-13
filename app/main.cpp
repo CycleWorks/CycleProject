@@ -1,13 +1,14 @@
 #include "Common/numerics.hpp"
 #include "Common/write.hpp"
 #include "Common/errors.hpp"
-#include "type.hpp"
-#include "value.hpp"
+#include "HIR/type.hpp"
+#include "HIR/value.hpp"
 #include <limits>
 #include <stdint.h>
 
 // NOTE: No pointer shall be nullptr
 
+using namespace Cycle::HIR;
 using namespace Cycle;
 
 int main(int argc, char** argv){

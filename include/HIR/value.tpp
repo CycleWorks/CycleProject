@@ -18,7 +18,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace Cycle {
+namespace Cycle::HIR {
     // NumberValueSet<T>::Range:
 
     template <typename T>

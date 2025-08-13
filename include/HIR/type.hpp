@@ -7,7 +7,7 @@
 #include <string_view>
 #include <unordered_map>
 
-namespace Cycle {
+namespace Cycle::HIR {
     struct ValueSetAndType;
 
     struct Type {
@@ -51,7 +51,7 @@ namespace Cycle {
     };
 }
 
-enum class Cycle::NumericType::Kind {
+enum class Cycle::HIR::NumericType::Kind {
     INT8 = 1,
     INT16,
     INT32,
