@@ -30,7 +30,7 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
-    bool subtraction_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b) {
+    bool subtraction_will_underflow(NumericWrapper<T> a, NumericWrapper<T> b) {
         if (b > NumericWrapper<T>(0) && a < NumericWrapper<T>::min() + b) return true;
         if (b < NumericWrapper<T>(0) && a > NumericWrapper<T>::max() + b) return true;
         return false;
