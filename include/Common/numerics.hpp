@@ -21,13 +21,16 @@ namespace Cycle {
     struct NumericWrapper {
         NumericWrapper() = default;
         NumericWrapper(const NumericWrapper<T>&) = default;
-        NumericWrapper(T number): _number(number){}
+        NumericWrapper(T number);
+
+        std::string to_string() const;
 
         static NumericWrapper<T> min(){ return std::numeric_limits<T>::min(); }
         static NumericWrapper<T> max(){ return std::numeric_limits<T>::max(); }
         static NumericWrapper<T> elipson(){ return std::numeric_limits<T>::epsilon(); }
 
-        explicit operator T() const { return _number; }
+        explicit operator T(){ return _number; }
+        explicit operator const T() const { return _number; }
         T value(){ return _number; }
         const T value() const { return _number; }
 
@@ -58,12 +61,12 @@ namespace Cycle {
         NumericWrapper<std::common_type_t<T, U>> operator*(const NumericWrapper<U>& other) const;
         template <typename U>
         requires IsNumeric<U>
-        NumericWrapper<long double> operator/(const NumericWrapper<U>& other) const;
-
-        NumericWrapper<T> operator-() const;
+        NumericWrapper<std::common_type_t<T, U>> operator/(const NumericWrapper<U>& other) const;
         template <typename U>
         requires IsNumeric<U>
-        NumericWrapper<long double> operator%(const NumericWrapper<U>& other) const;
+        NumericWrapper<std::common_type_t<T, U>> operator%(const NumericWrapper<U>& other) const;
+
+        NumericWrapper<T> operator-() const;
 
         template <typename U>
         requires IsNumeric<U>
@@ -74,6 +77,15 @@ namespace Cycle {
         template <typename U>
         requires IsNumeric<U>
         NumericWrapper<T>& operator-=(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator*=(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator/=(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        NumericWrapper<T>& operator%=(const NumericWrapper<U>& other);
     private:
         T _number;
     };

@@ -1,10 +1,36 @@
 #pragma once
 
+#include "Common/errors.hpp"
+#include "Common/math.hpp"
 #include "Common/numerics.hpp"
+#include <cmath>
 #include <limits>
+#include <sstream>
 
 namespace Cycle {
     // NumericWrapper<T>:
+
+    template <typename T>
+    requires IsNumeric<T>
+    NumericWrapper<T>::NumericWrapper(T number): _number(number){
+        if constexpr (IsFloat<T>){
+            if (std::isinf(_number)){
+                throw InternalError("NumericWrapper<T> failed: constructed class with infinite floating type");
+            }
+            if (std::isnan(_number)){
+                throw InternalError("NumericWrapper<T> failed: constructed class with NaN floating type");
+            }
+        }
+    }
+
+    template <typename T>
+    requires IsNumeric<T>
+    std::string NumericWrapper<T>::to_string() const {
+        std::ostringstream oss;
+        if constexpr (sizeof(T) == 1) oss << (int)(T)_number;
+        else oss << (T)_number;
+        return oss.str();
+    }
 
     template <typename T>
     requires IsNumeric<T>
@@ -28,7 +54,7 @@ namespace Cycle {
     requires IsNumeric<U>
     bool NumericWrapper<T>::operator>(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
-        return CommonType(other) < CommonType(*this);
+        return CommonType(_number) > CommonType(other.value()) && !_compare_numerics(CommonType(_number), CommonType(other.value()));
     }
     template <typename T>
     requires IsNumeric<T>
@@ -36,7 +62,7 @@ namespace Cycle {
     requires IsNumeric<U>
     bool NumericWrapper<T>::operator<=(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
-        return CommonType(*this) < CommonType(other) || CommonType(*this) == CommonType(other);
+        return CommonType(_number) < CommonType(other.value()) || _compare_numerics(CommonType(_number), CommonType(other.value()));
     }
     template <typename T>
     requires IsNumeric<T>
@@ -44,7 +70,7 @@ namespace Cycle {
     requires IsNumeric<U>
     bool NumericWrapper<T>::operator>=(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
-        return CommonType(*this) >= CommonType(other);
+        return CommonType(_number) > CommonType(other.value()) || _compare_numerics(CommonType(_number), CommonType(other.value()));
     }
     template <typename T>
     requires IsNumeric<T>
@@ -52,6 +78,9 @@ namespace Cycle {
     requires IsNumeric<U>
     NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator+(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
+        if (addition_will_overflow(NumericWrapper<CommonType>(_number), NumericWrapper<CommonType>(other.value()))){
+            throw InternalError("NumericWrapper<T> failed: addition overflow");
+        }
         return CommonType(_number) + CommonType(other.value());
     }
     template <typename T>
@@ -60,6 +89,9 @@ namespace Cycle {
     requires IsNumeric<U>
     NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator-(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
+        if (subtraction_will_overflow(NumericWrapper<CommonType>(_number), NumericWrapper<CommonType>(other.value()))){
+            throw InternalError("NumericWrapper<T> failed: subtraction overflow");
+        }
         return CommonType(_number) - CommonType(other.value());
     }
     template <typename T>
@@ -68,32 +100,54 @@ namespace Cycle {
     requires IsNumeric<U>
     NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator*(const NumericWrapper<U>& other) const {
         using CommonType = std::common_type_t<T, U>;
+        if (multiplication_will_overflow(NumericWrapper<CommonType>(_number), NumericWrapper<CommonType>(other.value()))){
+            throw InternalError("NumericWrapper<T> failed: multiplication overflow");
+        }
         return CommonType(_number) * CommonType(other.value());
     }
     template <typename T>
     requires IsNumeric<T>
     template <typename U>
     requires IsNumeric<U>
-    NumericWrapper<long double> NumericWrapper<T>::operator/(const NumericWrapper<U>& other) const {
+    NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator/(const NumericWrapper<U>& other) const {
+        using CommonType = std::common_type_t<T, U>;
         if (other.value() == 0){
             throw InternalError("NumericWrapper<T> failed: division by zero");
         }
-        return (long double)_number / (long double)other.value();
-    }
-    template <typename T>
-    requires IsNumeric<T>
-    NumericWrapper<T> NumericWrapper<T>::operator-() const {
-        return -_number;
+        if (division_will_overflow(NumericWrapper<CommonType>(_number), NumericWrapper<CommonType>(other.value()))){
+            throw InternalError("NumericWrapper<T> failed: division overflow");
+        }
+        NumericWrapper<CommonType> result = CommonType(_number) / CommonType(other.value());
+        if constexpr (IsFloat<T>){
+            if (std::isnan(result.value())) throw InternalError("NumericWrapper<T> failed: division returned NaN");
+        }
+        return result;
     }
     template <typename T>
     requires IsNumeric<T>
     template <typename U>
     requires IsNumeric<U>
-    NumericWrapper<long double> NumericWrapper<T>::operator%(const NumericWrapper<U>& other) const {
+    NumericWrapper<std::common_type_t<T, U>> NumericWrapper<T>::operator%(const NumericWrapper<U>& other) const {
+        using CommonType = std::common_type_t<T, U>;
         if (other.value() == 0){
-            throw InternalError("NumericWrapper<T> failed: modulo by zero");
+            throw InternalError("NumericWrapper<T> failed: modulo division by zero");
         }
-        return _modulus(_number, other.value());
+        if (division_will_overflow(NumericWrapper<CommonType>(_number), NumericWrapper<CommonType>(other.value()))){
+            throw InternalError("NumericWrapper<T> failed: modulo division overflow");
+        }
+        NumericWrapper<CommonType> result = _modulus(_number, other.value());
+        if constexpr (IsFloat<T>){
+            if (std::isnan(result.value())) throw InternalError("NumericWrapper<T> failed: modulo division returned NaN");
+        }
+        return result;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    NumericWrapper<T> NumericWrapper<T>::operator-() const {
+        if (subtraction_will_overflow(NumericWrapper<T>(0), *this)){
+            throw InternalError("NumericWrapper<T> failed: negation overflow");
+        }
+        return -_number;
     }
     template <typename T>
     requires IsNumeric<T>
@@ -117,6 +171,30 @@ namespace Cycle {
     requires IsNumeric<U>
     NumericWrapper<T>& NumericWrapper<T>::operator-=(const NumericWrapper<U>& other){
         *this = *this - other;
+        return *this;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<T>& NumericWrapper<T>::operator*=(const NumericWrapper<U>& other){
+        *this = *this * other;
+        return *this;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<T>& NumericWrapper<T>::operator/=(const NumericWrapper<U>& other){
+        *this = *this / other;
+        return *this;
+    }
+    template <typename T>
+    requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<T>& NumericWrapper<T>::operator%=(const NumericWrapper<U>& other){
+        *this = *this % other;
         return *this;
     }
 
