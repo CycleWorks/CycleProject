@@ -19,9 +19,16 @@ namespace Cycle {
     template <typename T>
     requires IsNumeric<T>
     struct NumericWrapper {
-        NumericWrapper() = default;
+        NumericWrapper() = delete;
         NumericWrapper(const NumericWrapper<T>&) = default;
         NumericWrapper(T number);
+
+        template <typename U>
+        requires IsNumeric<U>
+        explicit NumericWrapper(const NumericWrapper<U>& other);
+        template <typename U>
+        requires IsNumeric<U>
+        explicit NumericWrapper(U number);
 
         std::string to_string() const;
 

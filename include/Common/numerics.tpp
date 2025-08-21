@@ -25,6 +25,21 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<T>::NumericWrapper(const NumericWrapper<U>& other):
+        NumericWrapper<T>((T)other.value())
+    {}
+    template <typename T>
+    requires IsNumeric<T>
+    template <typename U>
+    requires IsNumeric<U>
+    NumericWrapper<T>::NumericWrapper(U number):
+        NumericWrapper<T>((T)number)
+    {}
+
+    template <typename T>
+    requires IsNumeric<T>
     std::string NumericWrapper<T>::to_string() const {
         std::ostringstream oss;
         if constexpr (sizeof(T) == 1) oss << (int)(T)_number;

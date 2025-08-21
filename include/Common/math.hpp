@@ -79,9 +79,9 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
-    NumericWrapper<long double> ceil_division(NumericWrapper<T> a, NumericWrapper<T> b){
-        NumericWrapper<long double> div = a / b;
-        NumericWrapper<long double> rem = a % b;
+    NumericWrapper<T> ceil_division(NumericWrapper<T> a, NumericWrapper<T> b){
+        NumericWrapper<T> div = a / b;
+        NumericWrapper<T> rem = a % b;
 
         if (rem == NumericWrapper<T>(0)){
             return div;
@@ -95,9 +95,9 @@ namespace Cycle {
 
     template <typename T>
     requires IsNumeric<T>
-    NumericWrapper<long double> floor_division(NumericWrapper<T> a, NumericWrapper<T> b){
-        NumericWrapper<long double> div = a / b;
-        NumericWrapper<long double> rem = a % b;
+    NumericWrapper<T> floor_division(NumericWrapper<T> a, NumericWrapper<T> b){
+        NumericWrapper<T> div = a / b;
+        NumericWrapper<T> rem = a % b;
 
         if (rem == NumericWrapper<T>(0)){
             return div;
