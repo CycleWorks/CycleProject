@@ -29,7 +29,12 @@ namespace Cycle::HIR {
         }
         if (_min > _max) std::swap(_min, _max);
         _step = absolute(_step);
-        _max -= (_max - _min) % _step;
+
+        NumericWrapper<T> clamp_offset = (_max - _min) % _step;
+        if (clamp_offset != NumericWrapper<T>(0)){
+            warningln("NumberValueSet<T>::Range warning: Max value has been clamped");
+        }
+        _max -= clamp_offset;
     }
 
     template <typename T>
@@ -56,8 +61,8 @@ namespace Cycle::HIR {
     requires IsNumeric<T>
     bool NumberValueSet<T>::Range::contains(NumericWrapper<T> value) const {
         if (value < _min || value > _max) return false;
-        NumericWrapper<long double> rem = (value - _min) % _step;
-        return rem == NumericWrapper<long double>(0);
+        NumericWrapper<T> rem = (value - _min) % _step;
+        return rem == NumericWrapper<T>(0);
     }
 
     template <typename T>
@@ -86,6 +91,10 @@ namespace Cycle::HIR {
         // Check if there's an overlap
         NumericWrapper<T> smaller_min = std::min(_min, other.get_min());
         NumericWrapper<T> bigger_min = std::max(_min, other.get_min());
+
+        if (subtraction_will_overflow(bigger_min, smaller_min)){
+            return false;
+        }
         if ((bigger_min - smaller_min) % _step == NumericWrapper<T>(0)){
             _merge_with(other);
             return true;
@@ -243,30 +252,41 @@ namespace Cycle::HIR {
     template <typename T>
     requires IsNumeric<T>
     bool NumberValueSet<T>::has_single_possibility() const {
-        return _possible_values.size() + _possible_ranges.size() == 1;
+        bool has_possible_values = !_possible_values.empty();
+        bool has_possible_ranges = !_possible_ranges.empty();
+
+        if (has_possible_values == has_possible_ranges) return false;
+        if (has_possible_values && !has_possible_ranges) return _possible_values.size() == 1;
+        if (_possible_ranges.size() != 1) return false;
+    
+        const Range& range = _possible_ranges[0];
+        return range.get_min() == range.get_max();
     }
 
     template <typename T>
     requires IsNumeric<T>
     std::string NumberValueSet<T>::print_value_set(uint indentation) const {
+        std::vector<std::string> elements;
+
+        for (const NumericWrapper<T>& num : _possible_values){
+            elements.push_back(num.to_string());
+        }
+        for (const Range& range : _possible_ranges){
+            elements.push_back(std::format(
+                "[{}, {}, {}]",
+                range.get_min().to_string(), range.get_max().to_string(), range.get_step().to_string()
+            ));
+        }
         std::ostringstream oss;
         for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
-        oss << "{";
-        for (auto it = _possible_values.begin(); it != _possible_values.end(); it++){
-            if constexpr (sizeof(T) == 1){
-                oss << (int)(T)*it;
-            } else {
-                oss << (T)*it;
-            }
-            if (std::next(it) != _possible_values.end()){
+        oss << '{';
+        for (auto iter = elements.begin(); iter != elements.end(); iter++){
+            oss << *iter;
+            if (std::next(iter) != elements.end()){
                 oss << ", ";
             }
         }
-        oss << "}";
-        for (const Range& range : _possible_ranges){
-            oss << " && ";
-            oss << std::format("[{}, {}, {}]", range.get_min(), range.get_max(), range.get_step());
-        }
+        oss << '}';
         return oss.str();
     }
 
@@ -275,8 +295,8 @@ namespace Cycle::HIR {
     void NumberValueSet<T>::_promote_values_to_range(){
         if (_possible_values.size() < 3) return;
 
-        std::vector<T> sorted(_possible_values.begin(), _possible_values.end());
-        std::set<T> values_to_remove;
+        std::vector<NumericWrapper<T>> sorted(_possible_values.begin(), _possible_values.end());
+        std::set<NumericWrapper<T>> values_to_remove;
 
         for (std::size_t i = 0; i < sorted.size() - 2; i++){
             std::size_t initial_index = i;
@@ -310,7 +330,7 @@ namespace Cycle::HIR {
             }
             i -= 1;
         }
-        for (T value : values_to_remove){
+        for (NumericWrapper<T> value : values_to_remove){
             _possible_values.erase(value);
         }
     }

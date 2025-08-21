@@ -29,10 +29,10 @@ std::string StructValueSet::print_value_set(uint indentation) const {
     for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
     oss << "{\n";
 
-    uint i = 0;
+    uint counter = 0;
     for (const std::unique_ptr<ValueSetAndType>& value : _ordered_value_sets){
         for (uint i = 0; i < indentation + 1; i++) oss << TAB_SPACE;
-        oss << "[struct field " << i++ << "]: ";
+        oss << "[struct field " << counter++ << "]: ";
         oss << value->get_value_set()->print_value_set(0) << '\n';
     }
     for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
