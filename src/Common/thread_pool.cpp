@@ -26,7 +26,7 @@ ThreadPool::ThreadPool(std::size_t thread_count):
                     });
                     if (_stop.load()){
                         if (!_tasks.empty()){
-                            writeln("{}[WARNING in THREAD #{}]: ThreadPool stopped before finishing all the tasks", GREY_COLOR, std::this_thread::get_id());
+                            warningln("ThreadPool stopped before finishing all the tasks");
                         }
                         return;
                     }

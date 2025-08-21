@@ -36,10 +36,6 @@ void Cycle::basic_writeln(std::ostream& stream, const std::string& output){
     set_console_color(OutputColor::RESET);
 }
 
-void Cycle::basic_writeln(const std::string& output){
-    basic_writeln(std::cout, output);
-}
-
 void Cycle::exit_success() noexcept {
     Cycle::writeln(std::cerr, "{}[NOTICE]: Program exited successfully", GREY_COLOR);
     std::exit(EXIT_SUCCESS);
