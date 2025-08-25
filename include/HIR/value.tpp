@@ -30,7 +30,7 @@ namespace Cycle::HIR {
         if (_min > _max) std::swap(_min, _max);
         _step = absolute(_step);
 
-        NumericWrapper<T> clamp_offset = (_max - _min) % _step;
+        NumericWrapper<T> clamp_offset = (_max % _step - _min % _step + _step) % _step;
         if (clamp_offset != NumericWrapper<T>(0)){
             warningln("NumberValueSet<T>::Range warning: Max value has been clamped");
         }
@@ -328,7 +328,7 @@ namespace Cycle::HIR {
             for (std::size_t j = initial_index; j < i; j++){
                 values_to_remove.insert(sorted[j]);
             }
-            i -= 1;
+            i--;
         }
         for (NumericWrapper<T> value : values_to_remove){
             _possible_values.erase(value);
