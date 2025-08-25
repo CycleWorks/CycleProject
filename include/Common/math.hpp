@@ -43,7 +43,7 @@ namespace Cycle {
     bool multiplication_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b){
         if (a == NumericWrapper<T>(0) || b == NumericWrapper<T>(0)) return false;
 
-        if constexpr (IsSignedInteger<T>) {
+        if constexpr (IsSignedInteger<T>){
             if (a == NumericWrapper<T>::min() && b == NumericWrapper<T>(-1)) return true;
             if (b == NumericWrapper<T>::min() && a == NumericWrapper<T>(-1)) return true;
         }
@@ -87,7 +87,7 @@ namespace Cycle {
             return div;
         }
         if ((a > NumericWrapper<T>(0) && b > NumericWrapper<T>(0)) || (a < NumericWrapper<T>(0) && b < NumericWrapper<T>(0))){
-            return div + NumericWrapper<T>(1);
+            return div - NumericWrapper<T>(1);
         } else {
             return div;
         }
