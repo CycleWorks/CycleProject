@@ -93,13 +93,6 @@ namespace Cycle::HIR {
         const Type* _type;
         std::unique_ptr<ValueSet> _value_set;
     };
-
-    // Factories:
-    struct StructValueSetFactory : public BasicFactory<StructValueSet> {};
-    template <typename T>
-    struct NumberValueSetFactory : public BasicFactory<NumericValueSet<T>> {};
-    struct PointerValueSetFactory : public BasicFactory<PointerValueSet> {};
-    struct ValueSetAndTypeFactory : public BasicFactory<ValueSetAndType> {};
 }
 
 #include "value.tpp"

@@ -28,20 +28,4 @@ namespace Cycle {
     protected:
         virtual void polymorphism() const = 0;
     };
-
-    template <typename Derived>
-    struct BasicFactory {
-        BasicFactory(const BasicFactory&) = delete;
-        BasicFactory& operator=(const BasicFactory&) = delete;
-
-        static std::unique_ptr<Derived> make_unique(Derived* new_class){
-            return std::unique_ptr<Derived>(new_class);
-        }
-        static std::shared_ptr<Derived> make_shared(Derived* new_class){
-            return std::shared_ptr<Derived>(new_class);
-        }
-    private:
-        BasicFactory() = default;
-        ~BasicFactory() = default;
-    };
 }
