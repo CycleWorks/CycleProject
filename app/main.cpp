@@ -20,7 +20,7 @@ int main(int argc, char** argv){
         const auto& struct_value = struct_type->create_worst_value();
 
         const ValueSet* value_set_0 = ((StructValueSet*)struct_value->get_value_set())->get_value_at_index(0)->get_value_set();
-        NumberValueSet<int32_t>* number_value_set_0 = (NumberValueSet<int32_t>*)value_set_0;
+        NumericValueSet<int32_t>* number_value_set_0 = (NumericValueSet<int32_t>*)value_set_0;
 
         number_value_set_0->remove_values_under(-40);
 

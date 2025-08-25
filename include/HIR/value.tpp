@@ -19,47 +19,47 @@
 #include <vector>
 
 namespace Cycle::HIR {
-    // NumberValueSet<T>::Range:
+    // NumericValueSet<T>::Range:
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>::Range::Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step): _min(min), _max(max), _step(step){
+    NumericValueSet<T>::Range::Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step): _min(min), _max(max), _step(step){
         if (_step == NumericWrapper<T>(0)){
-            throw InternalError("NumberValueSet<T> failed: step cannot be 0");
+            throw InternalError("NumericValueSet<T> failed: step cannot be 0");
         }
         if (_min > _max) std::swap(_min, _max);
         _step = absolute(_step);
 
         NumericWrapper<T> clamp_offset = (_max % _step - _min % _step + _step) % _step;
         if (clamp_offset != NumericWrapper<T>(0)){
-            warningln("NumberValueSet<T>::Range warning: Max value has been clamped");
+            warningln("NumericValueSet<T>::Range warning: Max value has been clamped");
         }
         _max -= clamp_offset;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::Range::set_min(NumericWrapper<T> min){ *this = Range(min, _max, _step); }
+    void NumericValueSet<T>::Range::set_min(NumericWrapper<T> min){ *this = Range(min, _max, _step); }
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::Range::set_max(NumericWrapper<T> max){ *this = Range(_min, max, _step); }
+    void NumericValueSet<T>::Range::set_max(NumericWrapper<T> max){ *this = Range(_min, max, _step); }
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::Range::set_step(NumericWrapper<T> step){ *this = Range(_min, _max, step); }
+    void NumericValueSet<T>::Range::set_step(NumericWrapper<T> step){ *this = Range(_min, _max, step); }
 
     template <typename T>
     requires IsNumeric<T>
-    NumericWrapper<T> NumberValueSet<T>::Range::get_min() const { return _min; }
+    NumericWrapper<T> NumericValueSet<T>::Range::get_min() const { return _min; }
     template <typename T>
     requires IsNumeric<T>
-    NumericWrapper<T> NumberValueSet<T>::Range::get_max() const { return _max; }
+    NumericWrapper<T> NumericValueSet<T>::Range::get_max() const { return _max; }
     template <typename T>
     requires IsNumeric<T>
-    NumericWrapper<T> NumberValueSet<T>::Range::get_step() const { return _step; }
+    NumericWrapper<T> NumericValueSet<T>::Range::get_step() const { return _step; }
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::Range::contains(NumericWrapper<T> value) const {
+    bool NumericValueSet<T>::Range::contains(NumericWrapper<T> value) const {
         if (value < _min || value > _max) return false;
         NumericWrapper<T> rem = (value - _min) % _step;
         return rem == NumericWrapper<T>(0);
@@ -67,7 +67,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::Range::try_merge_with(const Range& other){
+    bool NumericValueSet<T>::Range::try_merge_with(const Range& other){
         if (_step != other.get_step()) return false;
 
         // If previous step, append to eachother
@@ -104,17 +104,17 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::Range::_merge_with(const Range& other){
+    void NumericValueSet<T>::Range::_merge_with(const Range& other){
         _min = std::min(_min, other.get_min());
         _max = std::max(_max, other.get_max());
         *this = Range(_min, _max, _step);
     }
 
-    // NumberValueSet<T>:
+    // NumericValueSet<T>:
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>& NumberValueSet<T>::add_value(NumericWrapper<T> value){
+    NumericValueSet<T>& NumericValueSet<T>::add_value(NumericWrapper<T> value){
         _possible_values.insert(value);
 
         for (Range& range : _possible_ranges){
@@ -128,7 +128,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>& NumberValueSet<T>::add_range(const Range& value){
+    NumericValueSet<T>& NumericValueSet<T>::add_range(const Range& value){
         _merge_new_range(value);
         _initialized = true;
         return *this;
@@ -136,7 +136,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>& NumberValueSet<T>::remove_value(NumericWrapper<T> value){
+    NumericValueSet<T>& NumericValueSet<T>::remove_value(NumericWrapper<T> value){
         _possible_values.erase(value);
 
         std::vector<Range> previous_ranges = _possible_ranges;
@@ -172,7 +172,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>& NumberValueSet<T>::remove_values_over(NumericWrapper<T> value){
+    NumericValueSet<T>& NumericValueSet<T>::remove_values_over(NumericWrapper<T> value){
         std::set<NumericWrapper<T>> new_possible_value;
 
         for (const NumericWrapper<T>& possible_value : _possible_values){
@@ -203,7 +203,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    NumberValueSet<T>& NumberValueSet<T>::remove_values_under(NumericWrapper<T> value){
+    NumericValueSet<T>& NumericValueSet<T>::remove_values_under(NumericWrapper<T> value){
         std::set<NumericWrapper<T>> new_possible_value;
 
         for (const NumericWrapper<T>& possible_value : _possible_values){
@@ -234,7 +234,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::contains(NumericWrapper<T> value) const {
+    bool NumericValueSet<T>::contains(NumericWrapper<T> value) const {
         if (_possible_values.contains(value)) return true;
 
         for (const Range& possible_range : _possible_ranges){
@@ -245,13 +245,13 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::is_initialized() const {
+    bool NumericValueSet<T>::is_initialized() const {
         return _initialized;
     }
 
     template <typename T>
     requires IsNumeric<T>
-    bool NumberValueSet<T>::has_single_possibility() const {
+    bool NumericValueSet<T>::has_single_possibility() const {
         bool has_possible_values = !_possible_values.empty();
         bool has_possible_ranges = !_possible_ranges.empty();
 
@@ -265,7 +265,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    std::string NumberValueSet<T>::print_value_set(uint indentation) const {
+    std::string NumericValueSet<T>::print_value_set(uint indentation) const {
         std::vector<std::string> elements;
 
         for (const NumericWrapper<T>& num : _possible_values){
@@ -292,7 +292,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::_promote_values_to_range(){
+    void NumericValueSet<T>::_promote_values_to_range(){
         if (_possible_values.size() < 3) return;
 
         std::vector<NumericWrapper<T>> sorted(_possible_values.begin(), _possible_values.end());
@@ -337,7 +337,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    void NumberValueSet<T>::_merge_new_range(const Range& new_range){
+    void NumericValueSet<T>::_merge_new_range(const Range& new_range){
         for (Range& range : _possible_ranges){
             if (range.try_merge_with(new_range)) return;
         }

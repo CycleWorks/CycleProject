@@ -2,10 +2,10 @@
 #include "Common/write.hpp"
 #include "HIR/value.hpp"
 
-TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
+TEMPLATE_TEST_CASE("NumericValueSet verification", "[NumericValueSet]",
     int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, long double)
 {
-    using ValueSetType = Cycle::HIR::NumberValueSet<TestType>;
+    using ValueSetType = Cycle::HIR::NumericValueSet<TestType>;
     std::vector<TestType> test_signs;
 
     if constexpr (Cycle::IsUnsignedInteger<TestType>){
@@ -70,6 +70,6 @@ TEMPLATE_TEST_CASE("NumberValueSet verification", "[NumberValueSet]",
         REQUIRE_FALSE(set.contains(Cycle::NumericWrapper<TestType>::min()));
         REQUIRE_FALSE(set.contains(Cycle::NumericWrapper<TestType>::max()));
 
-        Cycle::writeln("Test NumberValueSet: {}", set.print_value_set());
+        Cycle::writeln("Test NumericValueSet: {}", set.print_value_set());
     }
 }

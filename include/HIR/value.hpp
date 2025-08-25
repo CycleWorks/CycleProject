@@ -28,7 +28,7 @@ namespace Cycle::HIR {
 
     template <typename T>
     requires IsNumeric<T>
-    struct NumberValueSet : public ValueSet {
+    struct NumericValueSet : public ValueSet {
         struct Range {
             explicit Range(NumericWrapper<T> min, NumericWrapper<T> max, NumericWrapper<T> step);
             explicit Range(const Range&) = default;
@@ -49,14 +49,14 @@ namespace Cycle::HIR {
             NumericWrapper<T> _step;
         };
     public:
-        explicit NumberValueSet() = default;
-        explicit NumberValueSet(const NumberValueSet&) = default;
+        explicit NumericValueSet() = default;
+        explicit NumericValueSet(const NumericValueSet&) = default;
 
-        NumberValueSet& add_value(NumericWrapper<T> value);
-        NumberValueSet& add_range(const Range& value);
-        NumberValueSet& remove_value(NumericWrapper<T> value);
-        NumberValueSet& remove_values_over(NumericWrapper<T> value);
-        NumberValueSet& remove_values_under(NumericWrapper<T> value);
+        NumericValueSet& add_value(NumericWrapper<T> value);
+        NumericValueSet& add_range(const Range& value);
+        NumericValueSet& remove_value(NumericWrapper<T> value);
+        NumericValueSet& remove_values_over(NumericWrapper<T> value);
+        NumericValueSet& remove_values_under(NumericWrapper<T> value);
         bool contains(NumericWrapper<T> value) const;
         bool is_initialized() const;
         bool has_single_possibility() const;
@@ -82,7 +82,7 @@ namespace Cycle::HIR {
     // Factories:
     struct StructValueSetFactory : public BasicFactory<StructValueSet> {};
     template <typename T>
-    struct NumberValueSetFactory : public BasicFactory<NumberValueSet<T>> {};
+    struct NumberValueSetFactory : public BasicFactory<NumericValueSet<T>> {};
     struct ValueSetAndTypeFactory : public BasicFactory<ValueSetAndType> {};
 }
 
