@@ -1,5 +1,6 @@
 #include "HIR/value.hpp"
 #include "Common/utils.hpp"
+#include "Common/write.hpp"
 #include <sstream>
 
 using namespace Cycle::HIR;
@@ -34,6 +35,51 @@ std::string StructValueSet::print_value_set(uint indentation) const {
         for (uint i = 0; i < indentation + 1; i++) oss << TAB_SPACE;
         oss << "[struct field " << counter++ << "]: ";
         oss << value->get_value_set()->print_value_set(0) << '\n';
+    }
+    for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
+    oss << "}";
+    return oss.str();
+}
+
+// PointerValueSet:
+
+void PointerValueSet::add_pointed_value(ValueSet* pointed_value_set){
+    _possible_pointed_values.push_back(pointed_value_set);
+}
+
+void PointerValueSet::add_null(){
+    _can_be_null = true;
+}
+
+std::vector<ValueSet*>& PointerValueSet::get_possible_pointed_values(){
+    return _possible_pointed_values;
+}
+
+const std::vector<ValueSet*>& PointerValueSet::get_possible_pointed_values() const {
+    return _possible_pointed_values;
+}
+
+bool PointerValueSet::can_be_null() const {
+    return _can_be_null;
+}
+
+bool PointerValueSet::is_always_null() const {
+    return _can_be_null && _possible_pointed_values.empty();
+}
+
+std::string PointerValueSet::print_value_set(uint indentation) const {
+    std::ostringstream oss;
+    for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
+
+    if (_can_be_null){
+        oss << "Pointer might be null or point to one of these set: {\n";
+    } else {
+        oss << "Pointer points to one of these set: {\n";
+    }
+    for (const ValueSet* value_set : _possible_pointed_values){
+        for (uint i = 0; i < indentation + 1; i++) oss << TAB_SPACE;
+        oss << "[Dereferenced]: ";
+        oss << value_set->print_value_set(0);
     }
     for (uint i = 0; i < indentation; i++) oss << TAB_SPACE;
     oss << "}";

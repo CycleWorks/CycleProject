@@ -70,6 +70,21 @@ namespace Cycle::HIR {
         bool _initialized = false;
     };
 
+    struct PointerValueSet : public ValueSet {
+        void add_pointed_value(ValueSet* pointed_value_set);
+        void add_null();
+        std::vector<ValueSet*>& get_possible_pointed_values();
+        const std::vector<ValueSet*>& get_possible_pointed_values() const;
+        bool can_be_null() const;
+        bool is_always_null() const;
+
+        std::string print_value_set(uint indentation = 0) const override;
+    private:
+        std::vector<ValueSet*> _possible_pointed_values;
+        bool _can_be_null = false;
+    };
+
+    // TODO Might delete this later
     struct ValueSetAndType {
         explicit ValueSetAndType(const Type* type, std::unique_ptr<ValueSet>&& value_set);
         const Type* get_type() const;
@@ -83,6 +98,7 @@ namespace Cycle::HIR {
     struct StructValueSetFactory : public BasicFactory<StructValueSet> {};
     template <typename T>
     struct NumberValueSetFactory : public BasicFactory<NumericValueSet<T>> {};
+    struct PointerValueSetFactory : public BasicFactory<PointerValueSet> {};
     struct ValueSetAndTypeFactory : public BasicFactory<ValueSetAndType> {};
 }
 
