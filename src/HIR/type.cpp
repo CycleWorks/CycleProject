@@ -1,4 +1,5 @@
 #include "HIR/type.hpp"
+#include "Common/numerics.hpp"
 #include "HIR/value.hpp"
 #include <limits>
 #include <memory>
@@ -191,8 +192,8 @@ std::unique_ptr<ValueSetAndType> NumericType::create_worst_value() const {
         single_u16.add_range(NumericValueSet<uint16_t>::Range(NumericWrapper<uint16_t>::min(), NumericWrapper<uint16_t>::max(), 1));
         single_u32.add_range(NumericValueSet<uint32_t>::Range(NumericWrapper<uint32_t>::min(), NumericWrapper<uint32_t>::max(), 1));
         single_u64.add_range(NumericValueSet<uint64_t>::Range(NumericWrapper<uint64_t>::min(), NumericWrapper<uint64_t>::max(), 1));
-        single_float.add_range(NumericValueSet<float>::Range(NumericWrapper<float>::min(), NumericWrapper<float>::max(), 1));
-        single_double.add_range(NumericValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), 1));
+        single_float.add_range(NumericValueSet<float>::Range(NumericWrapper<float>::min(), NumericWrapper<float>::max(), NumericWrapper<float>::elipson()));
+        single_double.add_range(NumericValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), NumericWrapper<double>::elipson()));
         initialized = true;
     }
     std::unique_ptr<ValueSet> value_set;
