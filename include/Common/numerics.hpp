@@ -36,6 +36,8 @@ namespace Cycle {
         static NumericWrapper<T> max(){ return std::numeric_limits<T>::max(); }
         static NumericWrapper<T> elipson(){ return std::numeric_limits<T>::epsilon(); }
 
+        static NumericWrapper<T> smallest_unit();
+
         explicit operator T(){ return _number; }
         explicit operator const T() const { return _number; }
         T value(){ return _number; }
@@ -110,6 +112,19 @@ namespace Cycle {
     template <typename T, typename U>
     requires IsNumeric<T> && IsNumeric<U>
     long double _modulus(T a, U b);
+
+    template <typename T>
+    requires IsNumeric<T>
+    bool _addition_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
+    template <typename T>
+    requires IsNumeric<T>
+    bool _subtraction_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
+    template <typename T>
+    requires IsNumeric<T>
+    bool _multiplication_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
+    template <typename T>
+    requires IsNumeric<T>
+    bool _division_will_overflow(NumericWrapper<T> a, NumericWrapper<T> b);
 }
 
 #include "numerics.tpp"
