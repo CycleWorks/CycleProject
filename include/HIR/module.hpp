@@ -1,18 +1,15 @@
-// #pragma once
+#pragma once
 
-// #include "Nodes/scope.hpp"
-// #include "Common/utils.hpp"
-// #include <memory>
+#include "Common/utils.hpp"
+#include "HIR/scope.hpp"
 
-// namespace Cycle::HIR {
-//     struct Module {
-//         Module();
+namespace Cycle::HIR {
+    struct FileModule {
+        FileModule();
 
-//         Nodes::ScopeHead* get_scope_head();
-//         const Nodes::ScopeHead* get_scope_head() const;
-//     private:
-//         std::unique_ptr<Nodes::ScopeHead> _scope_head;
-//     };
-
-//     struct ModuleFactory : BasicFactory<Module> {};
-// }
+        ScopeHead* get_scope_head();
+        const ScopeHead* get_scope_head() const;
+    private:
+        std::unique_ptr<ScopeHead> _scope_head;
+    };
+}

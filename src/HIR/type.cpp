@@ -184,16 +184,16 @@ std::unique_ptr<ValueSetAndType> NumericType::create_worst_value() const {
     static bool initialized = false;
 
     if (!initialized){
-        single_i8.add_range(NumericValueSet<int8_t>::Range(NumericWrapper<int8_t>::min(), NumericWrapper<int8_t>::max(), 1));
-        single_i16.add_range(NumericValueSet<int16_t>::Range(NumericWrapper<int16_t>::min(), NumericWrapper<int16_t>::max(), 1));
-        single_i32.add_range(NumericValueSet<int32_t>::Range(NumericWrapper<int32_t>::min(), NumericWrapper<int32_t>::max(), 1));
-        single_i64.add_range(NumericValueSet<int64_t>::Range(NumericWrapper<int64_t>::min(), NumericWrapper<int64_t>::max(), 1));
-        single_u8.add_range(NumericValueSet<uint8_t>::Range(NumericWrapper<uint8_t>::min(), NumericWrapper<uint8_t>::max(), 1));
-        single_u16.add_range(NumericValueSet<uint16_t>::Range(NumericWrapper<uint16_t>::min(), NumericWrapper<uint16_t>::max(), 1));
-        single_u32.add_range(NumericValueSet<uint32_t>::Range(NumericWrapper<uint32_t>::min(), NumericWrapper<uint32_t>::max(), 1));
-        single_u64.add_range(NumericValueSet<uint64_t>::Range(NumericWrapper<uint64_t>::min(), NumericWrapper<uint64_t>::max(), 1));
-        single_float.add_range(NumericValueSet<float>::Range(NumericWrapper<float>::min(), NumericWrapper<float>::max(), NumericWrapper<float>::elipson()));
-        single_double.add_range(NumericValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), NumericWrapper<double>::elipson()));
+        single_i8.add_range(NumericValueSet<int8_t>::Range(NumericWrapper<int8_t>::min(), NumericWrapper<int8_t>::max(), NumericWrapper<int8_t>::smallest_unit()));
+        single_i16.add_range(NumericValueSet<int16_t>::Range(NumericWrapper<int16_t>::min(), NumericWrapper<int16_t>::max(), NumericWrapper<int16_t>::smallest_unit()));
+        single_i32.add_range(NumericValueSet<int32_t>::Range(NumericWrapper<int32_t>::min(), NumericWrapper<int32_t>::max(), NumericWrapper<int32_t>::smallest_unit()));
+        single_i64.add_range(NumericValueSet<int64_t>::Range(NumericWrapper<int64_t>::min(), NumericWrapper<int64_t>::max(), NumericWrapper<int64_t>::smallest_unit()));
+        single_u8.add_range(NumericValueSet<uint8_t>::Range(NumericWrapper<uint8_t>::min(), NumericWrapper<uint8_t>::max(), NumericWrapper<uint8_t>::smallest_unit()));
+        single_u16.add_range(NumericValueSet<uint16_t>::Range(NumericWrapper<uint16_t>::min(), NumericWrapper<uint16_t>::max(), NumericWrapper<uint16_t>::smallest_unit()));
+        single_u32.add_range(NumericValueSet<uint32_t>::Range(NumericWrapper<uint32_t>::min(), NumericWrapper<uint32_t>::max(), NumericWrapper<uint32_t>::smallest_unit()));
+        single_u64.add_range(NumericValueSet<uint64_t>::Range(NumericWrapper<uint64_t>::min(), NumericWrapper<uint64_t>::max(), NumericWrapper<uint64_t>::smallest_unit()));
+        single_float.add_range(NumericValueSet<float>::Range(NumericWrapper<float>::min(), NumericWrapper<float>::max(), NumericWrapper<float>::smallest_unit()));
+        single_double.add_range(NumericValueSet<double>::Range(NumericWrapper<double>::min(), NumericWrapper<double>::max(), NumericWrapper<double>::smallest_unit()));
         initialized = true;
     }
     std::unique_ptr<ValueSet> value_set;

@@ -1,16 +1,16 @@
-// #include "HIR/module.hpp"
-// #include "HIR/Nodes/scope.hpp"
+#include "HIR/module.hpp"
+#include <memory>
 
-// using namespace Cycle;
+using namespace Cycle::HIR;
 
-// Module::Module():
-//     _scope_head(Nodes::ScopeHeadFactory::make_unique(new Nodes::ScopeHead()))
-// {}
+FileModule::FileModule():
+    _scope_head(std::unique_ptr<ScopeHead>(new ScopeHead()))
+{}
 
-// Nodes::ScopeHead* Module::get_scope_head(){
-//     return _scope_head.get();
-// }
+ScopeHead* FileModule::get_scope_head(){
+    return _scope_head.get();
+}
 
-// const Nodes::ScopeHead* Module::get_scope_head() const {
-//     return _scope_head.get();
-// }
+const ScopeHead* FileModule::get_scope_head() const {
+    return _scope_head.get();
+}
