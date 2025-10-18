@@ -59,7 +59,7 @@ CMakeSettings.json
 *.user
 *.autosave
 
-# macOS
+# MWacOS
 .DS_Store
 
 # Zed Editor
