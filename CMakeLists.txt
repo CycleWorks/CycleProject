@@ -2,8 +2,8 @@
 # CMake settings
 # -------------------------------
 
-cmake_minimum_required(VERSION 3.16)
-project(CycleProject LANGUAGES CXX VERSION 1.0.0)
+cmake_minimum_required(VERSION 4.0)
+project(CycleProject LANGUAGES CXX)
 
 # -------------------------------
 # Include project subfolders

@@ -26,24 +26,12 @@ def empty_folder_contents(folder_path: Path) -> None:
 
 def main() -> None:
     this_script_path = Path(__file__).resolve().parent
-    build_settings_file_path = this_script_path / "build_settings.json"
     build_folder_path = this_script_path / "build"
     bin_folder_path = this_script_path / "bin"
 
-    print(f"\nDeleting file: \"{build_settings_file_path}\"")
-    print(f"Deleting all files in: \"{build_folder_path}\"")
+    print(f"\nDeleting all files in: \"{build_folder_path}\"")
     print(f"Deleting all files in: \"{bin_folder_path}\"\n")
 
-    while True:
-        answer = input("Would you like to proceed? [Y/N]: ")
-        if answer.upper() == "Y":
-            break
-        if answer.upper() == "N":
-            print("Deletion aborted")
-            sys.exit(-1)
-        print("Invalid answer")
-
-    delete_file(build_settings_file_path)
     empty_folder_contents(build_folder_path)
     empty_folder_contents(bin_folder_path)
     print("Build files deleted\n")

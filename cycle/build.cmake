@@ -15,8 +15,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Link-time optimisation (LTO)
-cmake_policy(SET CMP0069 NEW)
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT output)
+if(ipo_supported)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+else()
+    message(STATUS "LTO not supported by compiler, disabling: ${output}")
+endif()
 
 # -------------------------------
 # Include Cycle subfolders
